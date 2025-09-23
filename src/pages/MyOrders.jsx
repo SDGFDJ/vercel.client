@@ -32,7 +32,7 @@ const MyOrders = () => {
   const [activeTab, setActiveTab] = useState('newPending');
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'https://vercel-server-umber.vercel.app/api';
 
   const fetchOrders = async () => {
     try {

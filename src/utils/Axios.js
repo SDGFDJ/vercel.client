@@ -1,7 +1,7 @@
 import axios from "axios";
 import SummaryApi from "../common/SummaryApi";
 
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const baseURL = import.meta.env.VITE_API_URL || "https://vercel-server-umber.vercel.app";
 
 const Axios = axios.create({
   baseURL,

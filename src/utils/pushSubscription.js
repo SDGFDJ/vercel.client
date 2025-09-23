@@ -4,7 +4,7 @@ export async function subscribeUser() {
       const reg = await navigator.serviceWorker.ready;
 
       // Backend से VAPID Public Key लाना
-      const response = await fetch("http://localhost:8080/api/notification/vapidPublicKey");
+      const response = await fetch("https://vercel-server-umber.vercel.app/api/notification/vapidPublicKey");
       const data = await response.json();
       const publicKey = data.publicKey;
 
@@ -16,7 +16,7 @@ export async function subscribeUser() {
       console.log("Push Subscription:", subscription);
 
       // अब इस subscription को backend पर save करो (DB में)
-      await fetch("http://localhost:8080/api/notification/subscribe", {
+      await fetch("https://vercel-server-umber.vercel.app/api/notification/subscribe", {
         method: "POST",
         body: JSON.stringify(subscription),
         headers: {
