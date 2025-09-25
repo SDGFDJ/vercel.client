@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import NoData from '../components/NoData';
-import { setOrder, updateOrderStatus, removeOrder } from '../redux/orderSlice';
+import { setOrder, updateOrderStatus } from '../redux/orderSlice';
 
 const statusStages = ["PLACED", "CONFIRMED", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"];
 
@@ -32,7 +32,8 @@ const MyOrders = () => {
   const [activeTab, setActiveTab] = useState('newPending');
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'https://vercel-server-umber.vercel.app/api';
+  // ✅ API URL fix
+  const API_URL = import.meta.env.VITE_API_URL1;
 
   const fetchOrders = async () => {
     try {
@@ -52,13 +53,14 @@ const MyOrders = () => {
 
   useEffect(() => { fetchOrders(); }, []);
 
+  // ✅ Cancel order fix → instead of removing, update payment_status
   const handleCancelOrder = async (orderId) => {
     try {
       setLoadingOrderId(orderId);
       const { data } = await axios.post(`${API_URL}/order/cancel`, { orderId }, { withCredentials: true });
       if (data.success) {
         toast.success(data.message);
-        dispatch(removeOrder(orderId));
+        dispatch(updateOrderStatus({ orderId, status: "CANCELLED", payment_status: "CANCELLED" }));
       } else {
         toast.error(data.message || 'Failed to cancel order');
       }
@@ -69,13 +71,19 @@ const MyOrders = () => {
     }
   };
 
+  // ✅ Update status fix → also set payment_status accordingly
   const handleUpdateStatus = async (orderId, status) => {
     try {
       setLoadingOrderId(orderId);
       const { data } = await axios.post(`${API_URL}/order/admin/update-status`, { orderId, status }, { withCredentials: true });
       if (data.success) {
         toast.success(data.message);
-        dispatch(updateOrderStatus({ orderId, status }));
+
+        let payment_status = undefined;
+        if (status === "DELIVERED") payment_status = "COMPLETED";
+        if (status === "CANCELLED") payment_status = "CANCELLED";
+
+        dispatch(updateOrderStatus({ orderId, status, payment_status }));
       } else {
         toast.error(data.message || 'Failed to update status');
       }
@@ -97,7 +105,9 @@ const MyOrders = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800"> {user.role === 'ADMIN' ? 'Admin Orders' : 'My Orders'} </h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+        {user.role === 'ADMIN' ? 'Admin Orders' : 'My Orders'}
+      </h1>
 
       <div className="flex gap-4 mb-6">
         <button onClick={() => setActiveTab('newPending')} className={`px-4 py-2 rounded ${activeTab === 'newPending' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 border'}`}>New / Pending</button>
@@ -108,7 +118,7 @@ const MyOrders = () => {
       {filteredOrders.length === 0 ? <NoData /> : (
         filteredOrders.map(order => {
           const productDetails = Array.isArray(order.product_details) ? order.product_details : [order.product_details].filter(Boolean);
-          
+
           return (
             <div key={order.orderId} className="border rounded-lg bg-white shadow-md mb-6 p-6">
               <div className="flex justify-between items-center mb-4">

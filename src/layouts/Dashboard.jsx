@@ -1,44 +1,39 @@
-import React, { useEffect, useState } from 'react'
-import UserMenu from '../components/UserMenu'
-import { Outlet } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { io } from "socket.io-client"
+import React, { useEffect, useState } from 'react';
+import UserMenu from '../components/UserMenu';
+import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { socket } from '../utils/socket';
 
 const Dashboard = () => {
-  const user = useSelector(state => state.user)
-  const [newOrdersCount, setNewOrdersCount] = useState(0)
+  const user = useSelector(state => state.user);
+  const [newOrdersCount, setNewOrdersCount] = useState(0);
 
   useEffect(() => {
-    if (!user.role || user.role !== "ADMIN") return
+    if (!user.role || user.role !== "ADMIN") return;
 
-    // Socket.io connection
-    const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:8080"
-    const socket = io(SOCKET_URL)
+    // Request notification permission
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
 
-    socket.on("connect", () => console.log("Socket connected"))
-
+    // Listen for new order events
     socket.on("new-order", (data) => {
-      console.log("New order received in Dashboard:", data)
-      
-      // Increase badge count
-      setNewOrdersCount(prev => prev + 1)
+      console.log("New order received:", data);
 
-      // ---------------- BROWSER NOTIFICATION ----------------
+      // Update badge count
+      setNewOrdersCount(prev => prev + 1);
+
+      // Browser notification
       if (Notification.permission === "granted") {
         new Notification("🛒 New Order Received", {
           body: `Order ID: ${data.orderId}\nTotal Amount: ₹${data.totalAmt}`,
-          icon: "/logo.png" // optional: site logo
-        })
+          icon: "/logo192.png"
+        });
       }
-    })
+    });
 
-    // Request permission on mount
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission()
-    }
-
-    return () => socket.disconnect()
-  }, [user.role])
+    return () => socket.off("new-order");
+  }, [user.role]);
 
   return (
     <section className='bg-white'>
@@ -51,17 +46,19 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className='container mx-auto p-3 grid lg:grid-cols-[250px,1fr]'>
+      <div className='container mx-auto p-3 grid lg:grid-cols-[250px,1fr] gap-4'>
+        {/* Sidebar */}
         <div className='py-4 sticky top-24 max-h-[calc(100vh-96px)] overflow-y-auto hidden lg:block border-r'>
           <UserMenu />
         </div>
 
+        {/* Main Content */}
         <div className='bg-white min-h-[75vh]'>
           <Outlet />
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

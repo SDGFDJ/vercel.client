@@ -1,4 +1,5 @@
-export const baseURL = "https://vercel-server-umber.vercel.app";
+// .env से baseURL लाना
+export const baseURL = import.meta.env.VITE_API_URL;
 
 const SummaryApi = {
   // User

@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@firebase/installations": "^0.6.19",
     "@reduxjs/toolkit": "^2.2.7",
     "@stripe/stripe-js": "^4.6.0",
     "@tanstack/react-table": "^8.20.5",
     "axios": "^1.7.4",
     "cors": "^2.8.5",
     "esbuild": "^0.25.9",
+    "firebase": "^12.3.0",
     "framer-motion": "^12.23.18",
     "git": "^0.1.5",
     "github": "^14.0.0",
