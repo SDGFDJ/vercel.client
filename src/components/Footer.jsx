@@ -33,7 +33,7 @@ const Footer = () => {
           <ul className="space-y-3 text-sm">
             <li className="flex items-center gap-2">
               <FaPhoneAlt className="text-primary-100" /> 
-              <span>+91 98765 43210</span>
+              <span>+91 88309 30200</span>
             </li>
             <li className="flex items-center gap-2">
               <FaEnvelope className="text-primary-100" /> 
@@ -41,7 +41,7 @@ const Footer = () => {
             </li>
             <li className="flex items-start gap-2">
               <FaMapMarkerAlt className="text-primary-100 mt-1" /> 
-              <span>123 Market Road, Thane, Maharashtra, India</span>
+              <span>Latif Compound, Nadi Naka, Shelar, Bhiwandi, Thane, Maharashtra, India</span>
             </li>
             <li className="flex items-center gap-2">
               <FaClock className="text-primary-100" /> 
