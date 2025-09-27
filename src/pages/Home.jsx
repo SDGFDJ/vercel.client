@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { valideURLConvert } from "../utils/valideURLConvert";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +11,36 @@ const Home = () => {
   const subCategoryData = useSelector((state) => state.product.allSubCategory);
   const navigate = useNavigate();
 
+  // Banners / Offers
+  const banners = [
+    {
+      text: "Festive Season Offer - Up to 50% Off!",
+      bg: "bg-yellow-200 text-yellow-900",
+    },
+    {
+      text: "Fresh Groceries at Best Prices!",
+      bg: "bg-green-200 text-green-900",
+    },
+    {
+      text: "Exclusive Offers for You!",
+      bg: "bg-pink-200 text-pink-900",
+    },
+  ];
+
+  const [currentBanner, setCurrentBanner] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % banners.length);
+    }, 4000); // 4 seconds auto change
+    return () => clearInterval(interval);
+  }, []);
+
   const handleRedirectProductListpage = (id, cat) => {
     const subcategory = subCategoryData.find((sub) => {
       return sub.category.some((c) => c._id === id);
     });
+    if (!subcategory) return;
     const url = `/${valideURLConvert(cat)}-${id}/${valideURLConvert(
       subcategory.name
     )}-${subcategory._id}`;
@@ -67,6 +93,13 @@ const Home = () => {
           >
             Shop Now
           </motion.button>
+
+          {/* Banner / Offer */}
+          <div
+            className={`mt-6 px-6 py-3 rounded-full font-semibold text-lg inline-block transition-all duration-500 ${banners[currentBanner].bg}`}
+          >
+            {banners[currentBanner].text}
+          </div>
         </motion.div>
       </div>
 

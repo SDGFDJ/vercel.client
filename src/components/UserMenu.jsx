@@ -10,82 +10,120 @@ import AxiosToastError from '../utils/AxiosToastError'
 import { HiOutlineExternalLink } from "react-icons/hi";
 import isAdmin from '../utils/isAdmin'
 
-const UserMenu = ({close}) => {
-   const user = useSelector((state)=> state.user)
-   const dispatch = useDispatch()
-   const navigate = useNavigate()
+const UserMenu = ({ close }) => {
+  const user = useSelector((state) => state.user)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-   const handleLogout = async()=>{
-        try {
-          const response = await Axios({
-             ...SummaryApi.logout
-          })
-          console.log("logout",response)
-          if(response.data.success){
-            if(close){
-              close()
-            }
-            dispatch(logout())
-            localStorage.clear()
-            toast.success(response.data.message)
-            navigate("/")
-          }
-        } catch (error) {
-          console.log(error)
-          AxiosToastError(error)
-        }
-   }
-
-   const handleClose = ()=>{
-      if(close){
-        close()
+  const handleLogout = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.logout
+      })
+      if (response.data.success) {
+        if (close) close()
+        dispatch(logout())
+        localStorage.clear()
+        toast.success(response.data.message)
+        navigate("/")
       }
-   }
+    } catch (error) {
+      AxiosToastError(error)
+    }
+  }
+
+  const handleClose = () => {
+    if (close) close()
+  }
+
   return (
-    <div>
-        <div className='font-semibold'>My Account</div>
-        <div className='text-sm flex items-center gap-2'>
-          <span className='max-w-52 text-ellipsis line-clamp-1'>{user.name || user.mobile} <span className='text-medium text-red-600'>{user.role === "ADMIN" ? "(Admin)" : "" }</span></span>
-          <Link onClick={handleClose} to={"/dashboard/profile"} className='hover:text-primary-200'>
-            <HiOutlineExternalLink size={15}/>
+    <div className="bg-gray-900 text-white rounded-xl shadow-2xl p-4 w-56 transition-all duration-300">
+      {/* Header */}
+      <div className="font-semibold text-lg border-b border-gray-700 pb-2 mb-2">My Account</div>
+      
+      {/* User Info */}
+      <div className="text-sm flex items-center gap-2 mb-3">
+        <span className="max-w-40 truncate">{user.name || user.mobile} 
+          <span className="text-red-400 font-medium">
+            {user.role === "ADMIN" ? " (Admin)" : ""}
+          </span>
+        </span>
+        <Link
+          onClick={handleClose}
+          to={"/dashboard/profile"}
+          className="hover:text-blue-400 transition-colors duration-300"
+        >
+          <HiOutlineExternalLink size={15} />
+        </Link>
+      </div>
+
+      <Divider />
+
+      {/* Menu Links */}
+      <div className="text-sm grid gap-1">
+        {isAdmin(user.role) && (
+          <Link
+            onClick={handleClose}
+            to={"/dashboard/category"}
+            className="px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
+          >
+            Category
           </Link>
-        </div>
+        )}
 
-        <Divider/>
+        {isAdmin(user.role) && (
+          <Link
+            onClick={handleClose}
+            to={"/dashboard/subcategory"}
+            className="px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-pink-600 hover:to-orange-500 transition-all duration-300"
+          >
+            Sub Category
+          </Link>
+        )}
 
-        <div className='text-sm grid gap-1'>
-            {
-              isAdmin(user.role) && (
-                <Link onClick={handleClose} to={"/dashboard/category"} className='px-2 hover:bg-orange-200 py-1'>Category</Link>
-              )
-            }
+        {isAdmin(user.role) && (
+          <Link
+            onClick={handleClose}
+            to={"/dashboard/upload-product"}
+            className="px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-green-600 hover:to-teal-500 transition-all duration-300"
+          >
+            Upload Product
+          </Link>
+        )}
 
-            {
-              isAdmin(user.role) && (
-                <Link onClick={handleClose} to={"/dashboard/subcategory"} className='px-2 hover:bg-orange-200 py-1'>Sub Category</Link>
-              )
-            }
+        {isAdmin(user.role) && (
+          <Link
+            onClick={handleClose}
+            to={"/dashboard/product"}
+            className="px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-yellow-500 hover:to-red-500 transition-all duration-300"
+          >
+            Product
+          </Link>
+        )}
 
-            {
-              isAdmin(user.role) && (
-                <Link onClick={handleClose} to={"/dashboard/upload-product"} className='px-2 hover:bg-orange-200 py-1'>Upload Product</Link>
-              )
-            }
+        <Link
+          onClick={handleClose}
+          to={"/dashboard/myorders"}
+          className="px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-500 transition-all duration-300"
+        >
+          My Orders
+        </Link>
 
-            {
-              isAdmin(user.role) && (
-                <Link onClick={handleClose} to={"/dashboard/product"} className='px-2 hover:bg-orange-200 py-1'>Product</Link>
-              )
-            }
+        <Link
+          onClick={handleClose}
+          to={"/dashboard/address"}
+          className="px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-cyan-600 hover:to-blue-500 transition-all duration-300"
+        >
+          Save Address
+        </Link>
 
-
-            <Link onClick={handleClose} to={"/dashboard/myorders"} className='px-2 hover:bg-orange-200 py-1'>My Orders</Link>
-
-            <Link onClick={handleClose} to={"/dashboard/address"} className='px-2 hover:bg-orange-200 py-1'>Save Address</Link>
-
-            <button onClick={handleLogout} className='text-left px-2 hover:bg-orange-200 py-1'>Log Out</button>
-
-        </div>
+        <button
+          onClick={handleLogout}
+          className="text-left px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-red-600 hover:to-pink-600 transition-all duration-300"
+        >
+          Log Out
+        </button>
+      </div>
     </div>
   )
 }

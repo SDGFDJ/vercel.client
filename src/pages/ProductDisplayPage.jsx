@@ -207,13 +207,14 @@ const ProductDisplayPage = () => {
           onMouseLeave={handleMouseLeave}
           onClick={handleImageClick}
         >
-          <motion.img
-            src={data.image[image] || "https://via.placeholder.com/600"}
-            alt={data.name}
-            className="w-full h-[40vh] object-contain p-8"
-            animate={{ rotateX: rotate.x, rotateY: rotate.y, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 600, damping: 25 }}
-          />
+         <motion.img
+  src={data.image[image] || "https://via.placeholder.com/600"}
+  alt={data.name}
+  className="w-full h-[90vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh] object-contain"
+  animate={{ rotateX: rotate.x, rotateY: rotate.y, scale: 1.02 }}
+  transition={{ type: "spring", stiffness: 600, damping: 25 }}
+/>
+
           {/* Thumbnails (shown on hover or click) */}
           <div
             ref={imageContainer}
