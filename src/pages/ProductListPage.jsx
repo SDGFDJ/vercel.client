@@ -84,30 +84,30 @@ const ProductListPage = () => {
     <section className="sticky top-24 lg:top-20">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-[200px,1fr] lg:grid-cols-[280px,1fr] gap-4 p-4">
         
-        {/* Sidebar */}
-        <div className="hidden md:block bg-white shadow-md rounded-lg p-2 md:p-4 min-h-[calc(100vh-128px)] max-h-[calc(100vh-128px)] overflow-y-auto scrollbarCustom">
-          {displaySubCategory.map((s) => {
-            const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?._id}/${valideURLConvert(s.name)}-${s._id}`;
-            return (
-              <Link
-                key={s._id}
-                to={link}
-                className={`w-full flex items-center justify-between p-2 md:p-3 rounded-lg hover:bg-green-100 transition-colors duration-200 ${
-                  subCategoryId === s._id ? "bg-green-100" : ""
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <img
-                    src={s.image}
-                    alt={s.name}
-                    className="w-10 h-10 md:w-12 md:h-12 object-contain"
-                  />
-                  <span className="text-sm md:text-base font-medium">{s.name}</span>
-                </div>
-              </Link>
-            );
-          })}
+       {/* Sidebar */}
+<div className="hidden md:block bg-white shadow-md rounded-lg p-2 md:p-4 min-h-[calc(100vh-128px)] max-h-[calc(100vh-128px)] overflow-y-auto scrollbarCustom">
+  {DisplaySubCatory.map((s) => {
+    const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?._id}/${valideURLConvert(s.name)}-${s._id}`;
+    return (
+      <Link
+        key={s._id}
+        to={link}
+        className={`w-full flex items-center justify-between p-2 md:p-3 rounded-lg hover:bg-green-100 transition-colors duration-200 ${
+          subCategoryId === s._id ? "bg-green-100" : ""
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <img
+            src={s.image}
+            alt={s.name}
+            className="w-10 h-10 md:w-12 md:h-12 object-contain"
+          />
+          <span className="text-sm md:text-base font-medium">{s.name}</span>
         </div>
+      </Link>
+    );
+  })}
+</div>
 
         {/* Product Grid */}
         <div className="bg-white shadow-md rounded-lg p-4">
