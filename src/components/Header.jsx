@@ -152,14 +152,7 @@ const Header = () => {
         </>
       )}
 
-      {/* Toast */}
-      {toastMessage && (
-        <div className="fixed top-10 left-1/2 -translate-x-1/2 z-[60] pointer-events-none">
-          <div className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fadeInOut">
-            {toastMessage}
-          </div>
-        </div>
-      )}
+    
     </header>
   );
 };

@@ -208,9 +208,9 @@ const ProductDisplayPage = () => {
           onClick={handleImageClick}
         >
          <motion.img
-  src={data.image[image] || "https://via.placeholder.com/600"}
+    src={data.image[image] || "https://via.placeholder.com/600"}
   alt={data.name}
-  className="w-full h-[90vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh] object-contain"
+className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] object-contain"
   animate={{ rotateX: rotate.x, rotateY: rotate.y, scale: 1.02 }}
   transition={{ type: "spring", stiffness: 600, damping: 25 }}
 />
@@ -334,21 +334,18 @@ const ProductDisplayPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="bg-gradient-to-r from-teal-50 to-teal-100 px-8 py-4 rounded-xl border border-teal-200 shadow-md">
-                <p className="font-bold text-3xl text-teal-900">
-                  {DisplayPriceInRupees(pricewithDiscount(data.price, data.discount))}
-                </p>
-              </div>
-              {data.discount > 0 && (
-                <>
-                  <p className="line-through text-gray-500 text-lg font-medium">
-                    {DisplayPriceInRupees(data.price)}
-                  </p>
-                  <p className="font-bold text-teal-500 text-lg">
-                    {data.discount}% <span className="text-base text-gray-500">Off</span>
-                  </p>
-                </>
-              )}
+             <div className="flex items-center gap-3">
+  <span className="text-3xl font-bold text-teal-600">
+    {DisplayPriceInRupees(pricewithDiscount(data.price, data.discount))}
+  </span>
+  {data.discount > 0 && (
+    <span className="line-through text-gray-400 text-lg">
+      {DisplayPriceInRupees(data.price)}
+    </span>
+  )}
+  <span className="text-red-500 font-semibold">{data.discount}% OFF</span>
+</div>
+
             </motion.div>
 
             {/* Quantity Selector and Add Button */}
