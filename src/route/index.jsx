@@ -14,6 +14,7 @@ import Dashboard from "../layouts/Dashboard";
 import Profile from "../pages/Profile";
 import MyOrders from "../pages/MyOrders";
 import Address from "../pages/Address";
+import MyWishlist from "../pages/Wishlist"; // ✅ Import MyWishlist
 
 // Admin Pages
 import AdminAllOrders from "../pages/AdminAllOrders";
@@ -53,6 +54,9 @@ const router = createBrowserRouter([
           { path: "profile", element: <Profile /> },
           { path: "myorders", element: <MyOrders /> },
           { path: "address", element: <Address /> },
+
+          // ✅ My Wishlist for both user & admin
+          { path: "mywishlist", element: <MyWishlist /> },
 
           // Admin-only routes
           { path: "AdminAllOrders", element: <AdminAllOrders /> },

@@ -54,6 +54,13 @@ const SummaryApi = {
   cancelOrder: { url: '/api/order/cancel', method: 'post' },
   getOrderItems: { url: '/api/order/order-list', method: 'get' },
 
+  wishlist: {
+  add: { url: "/api/wishlist/add", method: "POST" },
+  remove: { url: "/api/wishlist/remove", method: "POST" },
+  get: { url: "/api/wishlist/get", method: "GET" },
+},
+
+
   // Admin Orders
   getAllOrders: { url: '/api/order/admin/orders', method: 'get' },
   updateOrderStatus: { url: '/api/order/admin/update-status', method: 'post' },

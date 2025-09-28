@@ -100,6 +100,14 @@ const UserMenu = ({ close }) => {
             Product
           </Link>
         )}
+    {/* ✅ My Wishlist Link Added */}
+        <Link
+          onClick={handleClose}
+          to={"/dashboard/mywishlist"}
+          className="px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-pink-500 hover:to-red-500 transition-all duration-300"
+        >
+          My Wishlist
+        </Link>
 
         <Link
           onClick={handleClose}

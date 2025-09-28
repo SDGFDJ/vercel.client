@@ -43,28 +43,34 @@ const UploadProduct = () => {
     const { name, value } = e.target;
     setData(prev => ({ ...prev, [name]: value }));
   }
+// ---------- UPLOAD IMAGE ----------
+const handleUploadImage = async (e) => {
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
 
-  // ---------- UPLOAD IMAGE ----------
-  const handleUploadImage = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  try {
+    setImageLoading(true);
 
-    try {
-      setImageLoading(true);
-      const response = await uploadImage(file);
-      const imageUrl = response.secure_url || response.url;
+    // सभी files upload करके URLs collect करें
+    const uploadedImages = await Promise.all(
+      files.map(async (file) => {
+        const response = await uploadImage(file);
+        return response.secure_url || response.url;
+      })
+    );
 
-      setData(prev => ({
-        ...prev,
-        image: [...prev.image, imageUrl]
-      }));
-    } catch (error) {
-      console.error("Image Upload Error:", error);
-      toast.error("Image upload failed!");
-    } finally {
-      setImageLoading(false);
-    }
+    // पुराने images + नए images को merge करें
+    setData(prev => ({
+      ...prev,
+      image: [...prev.image, ...uploadedImages]
+    }));
+  } catch (error) {
+    console.error("Image Upload Error:", error);
+    toast.error("Image upload failed!");
+  } finally {
+    setImageLoading(false);
   }
+};
 
   // ---------- DELETE IMAGE ----------
   const handleDeleteImage = (index) => {
@@ -166,44 +172,46 @@ const UploadProduct = () => {
             />
           </div>
 
-          {/* Image Upload */}
-          <div>
-            <p className='font-medium'>Image</p>
-            <label htmlFor='productImage' className='bg-blue-50 h-24 border rounded flex justify-center items-center cursor-pointer'>
-              <div className='text-center flex justify-center items-center flex-col'>
-                {imageLoading ? <Loading/> : (
-                  <>
-                    <FaCloudUploadAlt size={35}/>
-                    <p>Upload Image</p>
-                  </>
-                )}
-              </div>
-              <input 
-                type='file'
-                id='productImage'
-                className='hidden'
-                accept='image/*'
-                onChange={handleUploadImage}
-              />
-            </label>
+         {/* Image Upload */}
+<div>
+  <p className='font-medium'>Image</p>
+  <label htmlFor='productImage' className='bg-blue-50 h-24 border rounded flex justify-center items-center cursor-pointer'>
+    <div className='text-center flex justify-center items-center flex-col'>
+      {imageLoading ? <Loading/> : (
+        <>
+          <FaCloudUploadAlt size={35}/>
+          <p>Upload Images</p>
+        </>
+      )}
+    </div>
+    <input 
+      type='file'
+      id='productImage'
+      className='hidden'
+      accept='image/*'
+      multiple   // ✅ allow multiple select
+      onChange={handleUploadImage}
+    />
+  </label>
 
-            {/* Preview Images */}
-            <div className='flex flex-wrap gap-4 mt-2'>
-              {data.image.map((img, index) => (
-                <div key={img + index} className='h-20 w-20 bg-blue-50 border relative group'>
-                  <img
-                    src={img}
-                    alt={`product-${index}`}
-                    className='w-full h-full object-scale-down cursor-pointer' 
-                    onClick={() => setViewImageURL(img)}
-                  />
-                  <div onClick={() => handleDeleteImage(index)} className='absolute bottom-0 right-0 p-1 bg-red-600 rounded text-white hidden group-hover:block cursor-pointer'>
-                    <MdDelete/>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+  {/* Preview Images */}
+  <div className='flex flex-wrap gap-4 mt-2'>
+    {data.image.map((img, index) => (
+      <div key={img + index} className='h-20 w-20 bg-blue-50 border relative group'>
+        <img
+          src={img}
+          alt={`product-${index}`}
+          className='w-full h-full object-scale-down cursor-pointer' 
+          onClick={() => setViewImageURL(img)}
+        />
+        <div onClick={() => handleDeleteImage(index)} className='absolute bottom-0 right-0 p-1 bg-red-600 rounded text-white hidden group-hover:block cursor-pointer'>
+          <MdDelete/>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
 
           {/* Category */}
           <div className='grid gap-1'>
