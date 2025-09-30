@@ -8,7 +8,7 @@ const Footer = () => {
         
         {/* Brand Info */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-3">Ma Gayatri Store</h2>
+          <h2 className="text-2xl font-bold text-white mb-3">Trendify</h2>
           <p className="text-gray-400 text-sm leading-relaxed">
             Your one-stop destination for quality products and excellent service.  
             We deliver happiness at your doorstep!

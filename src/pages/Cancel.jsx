@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 const StatusMessage = ({ status = 'Cancelled', color = 'red' }) => {
@@ -6,6 +6,11 @@ const StatusMessage = ({ status = 'Cancelled', color = 'red' }) => {
   const textColor = color === 'red' ? 'text-red-800' : 'text-green-800';
   const bgColor = color === 'red' ? 'bg-red-200' : 'bg-green-200';
   const borderColor = color === 'red' ? 'border-red-900' : 'border-green-900';
+
+  // ✅ Scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   return (
     <div className={`m-2 w-full max-w-md ${bgColor} p-4 py-5 rounded mx-auto flex flex-col justify-center items-center gap-5`}>

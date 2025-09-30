@@ -61,6 +61,15 @@ const UserMenu = ({ close }) => {
 
       {/* Menu Links */}
       <div className="text-sm grid gap-1">
+        {/* ✅ Home Button */}
+        <Link
+          onClick={handleClose}
+          to="/"
+          className="px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500 transition-all duration-300"
+        >
+          Home
+        </Link>
+
         {isAdmin(user.role) && (
           <Link
             onClick={handleClose}
@@ -100,7 +109,7 @@ const UserMenu = ({ close }) => {
             Product
           </Link>
         )}
-    {/* ✅ My Wishlist Link Added */}
+
         <Link
           onClick={handleClose}
           to={"/dashboard/mywishlist"}

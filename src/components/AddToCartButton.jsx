@@ -7,18 +7,28 @@ import AxiosToastError from '../utils/AxiosToastError';
 import Loading from './Loading';
 import { useSelector } from 'react-redux';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
 
 const AddToCartButton = ({ data }) => {
   const { fetchCartItem, updateCartItem, deleteCartItem } = useGlobalContext();
   const [loading, setLoading] = useState(false);
   const cartItem = useSelector((state) => state.cartItem.cart);
+  const user = useSelector((state) => state.user); // ✅ get user
   const [isAvailableCart, setIsAvailableCart] = useState(false);
   const [qty, setQty] = useState(0);
   const [cartItemDetails, setCartItemsDetails] = useState();
+  const navigate = useNavigate(); // ✅ for redirect
 
+  // Handle Add to Cart with Login Check
   const handleADDTocart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!user || !user._id) {
+      toast.error("Please login first to add products!");
+      navigate("/login");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -57,6 +67,12 @@ const AddToCartButton = ({ data }) => {
     e.preventDefault();
     e.stopPropagation();
 
+    if (!user || !user._id) {
+      toast.error("Please login first to update cart!");
+      navigate("/login");
+      return;
+    }
+
     const response = await updateCartItem(cartItemDetails?._id, qty + 1);
 
     if (response.success) {
@@ -67,6 +83,13 @@ const AddToCartButton = ({ data }) => {
   const decreaseQty = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!user || !user._id) {
+      toast.error("Please login first to update cart!");
+      navigate("/login");
+      return;
+    }
+
     if (qty === 1) {
       deleteCartItem(cartItemDetails?._id);
     } else {
@@ -82,7 +105,6 @@ const AddToCartButton = ({ data }) => {
     <div className="w-full max-w-[200px] font-sans">
       {isAvailableCart ? (
         <div className="flex items-center rounded-xl bg-white shadow-lg border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-xl">
-          {/* Decrease Button */}
           <button
             onClick={decreaseQty}
             className="w-12 h-12 flex items-center justify-center bg-gradient-to-r from-red-500 to-red-600 text-white text-lg font-semibold hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 transition-transform duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -92,7 +114,6 @@ const AddToCartButton = ({ data }) => {
             <FaMinus className="w-5 h-5" />
           </button>
 
-          {/* Quantity Display */}
           <div
             className="flex-1 h-12 flex items-center justify-center text-lg font-bold text-gray-800 bg-gray-50 border-x border-gray-200"
             aria-live="polite"
@@ -100,7 +121,6 @@ const AddToCartButton = ({ data }) => {
             {qty}
           </div>
 
-          {/* Increase Button */}
           <button
             onClick={increaseQty}
             className="w-12 h-12 flex items-center justify-center bg-gradient-to-r from-green-500 to-green-600 text-white text-lg font-semibold hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 transition-transform duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"

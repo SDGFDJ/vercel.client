@@ -13,6 +13,11 @@ const MyWishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0); // ✅ Always open from top
+  }, []);
+
   // Fetch wishlist from backend
   const fetchWishlist = async () => {
     try {

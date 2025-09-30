@@ -1,21 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import CategoryWiseProductDisplay from '../components/CategoryWiseProductDisplay';
 import { valideURLConvert } from '../utils/valideURLConvert';
-import { FaSearch, FaShoppingCart, FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Using Font Awesome icons
 import Loading from '../components/Loading';
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
-
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
-
   render() {
     if (this.state.hasError) {
       return (
@@ -38,182 +34,165 @@ class ErrorBoundary extends React.Component {
 
 const Home = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user?.user || {});
-  const loadingCategory = useSelector((state) => state.product?.loadingCategory || false);
+  const user = useSelector((state) => state.user);
   const categoryData = useSelector((state) => state.product?.allCategory || []);
   const subCategoryData = useSelector((state) => state.product?.allSubCategory || []);
-  const cartItems = useSelector((state) => state.cart?.items || []); // Assuming cart is in Redux
+  const loadingCategory = useSelector((state) => state.product?.loadingCategory || false);
+
   const [currentBanner, setCurrentBanner] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [email, setEmail] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [email, setEmail] = useState('');
 
-  // Banners / Offers
+  // Fashion / Trendify banners
   const banners = [
     {
-      text: 'Festive Season Sale - Up to 50% Off!',
-      bg: 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white',
-      image: 'https://via.placeholder.com/1200x400?text=Festive+Sale',
-      redirect: '/offers/festive-sale',
+      text: 'Trendify Exclusive Fashion Sale!',
+      bg: 'bg-gradient-to-r from-purple-500 to-pink-500 text-white',
+      image: 'https://via.placeholder.com/1200x400?text=Fashion+Sale',
+      redirect: '/offers/fashion-sale',
     },
     {
-      text: 'Fresh Groceries at Unbeatable Prices!',
-      bg: 'bg-gradient-to-r from-green-400 to-teal-500 text-white',
-      image: 'https://via.placeholder.com/1200x400?text=Fresh+Groceries',
-      redirect: '/category/groceries',
+      text: 'New Arrivals in Trendy Styles',
+      bg: 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white',
+      image: 'https://via.placeholder.com/1200x400?text=New+Arrivals',
+      redirect: '/category/new-arrivals',
     },
     {
-      text: 'Exclusive Deals Just for You!',
-      bg: 'bg-gradient-to-r from-pink-400 to-red-500 text-white',
-      image: 'https://via.placeholder.com/1200x400?text=Exclusive+Deals',
-      redirect: '/offers/exclusive',
+      text: 'Limited Time Fashion Deals',
+      bg: 'bg-gradient-to-r from-red-400 to-orange-400 text-white',
+      image: 'https://via.placeholder.com/1200x400?text=Limited+Deals',
+      redirect: '/offers/limited',
     },
   ];
 
-  // Banner auto-rotation
+  // Auto banner rotation
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 5000); // 5 seconds
+    }, 5000);
     return () => clearInterval(interval);
-  }, [banners.length]);
+  }, []);
 
-  // Handle banner navigation
-  const handleBannerChange = (index) => {
-    setCurrentBanner(index);
-  };
-
-  // Handle category redirect
-  const handleRedirectProductListpage = (id, cat) => {
-    const subcategory = subCategoryData.find((sub) =>
-      sub.category?.some((c) => c._id === id)
-    );
-    if (!subcategory) {
-      console.warn('No subcategory found for category:', id);
-      return;
-    }
-    const url = `/${valideURLConvert(cat)}-${id}/${valideURLConvert(subcategory.name)}-${subcategory._id}`;
-    navigate(url);
-  };
-
-  // Scroll to products section
+  // Scroll to products
   const scrollToProducts = () => {
     const element = document.getElementById('products-section');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Handle search
+  // Search
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery(''); // Clear search input after submission
+      setSearchQuery('');
     }
   };
 
-  // Handle newsletter signup
+  // Newsletter
   const handleNewsletterSignup = (e) => {
     e.preventDefault();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       alert('Please enter a valid email address.');
       return;
     }
-    // Mock API call for newsletter signup
     setTimeout(() => {
       alert('Subscribed successfully!');
       setEmail('');
     }, 1000);
   };
 
-  // Filter categories
   const filteredCategories = selectedCategory
     ? categoryData.filter((cat) => cat._id === selectedCategory)
     : categoryData;
 
+  // Redirect to category + subcategory page
+  const handleRedirectProductListpage = (id, cat) => {
+    const subcategory = subCategoryData.find((sub) =>
+      sub.category?.some((c) => c._id === id)
+    );
+    if (!subcategory) return;
+    const url = `/${valideURLConvert(cat)}-${id}/${valideURLConvert(subcategory.name)}-${subcategory._id}`;
+    navigate(url);
+  };
+
   return (
     <ErrorBoundary>
       <section className="bg-gray-50 min-h-screen">
-     {/* Hero Section */}
-<div className="relative w-full h-[25vh] sm:h-[30vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-100 via-white to-teal-100">
-  {/* Animated Background Elements (Optional, smaller size for mobile) */}
-  <motion.div
-    animate={{ x: [0, 30, 0], y: [0, 20, 0], rotate: [0, 360, 0] }}
-    transition={{ repeat: Infinity, duration: 15, ease: 'easeInOut' }}
-    className="absolute w-40 h-40 bg-green-200 rounded-full opacity-20 -top-12 -left-8"
-  />
-  <motion.div
-    animate={{ x: [0, -40, 0], y: [0, -30, 0], rotate: [0, -360, 0] }}
-    transition={{ repeat: Infinity, duration: 18, ease: 'easeInOut' }}
-    className="absolute w-60 h-60 bg-yellow-200 rounded-full opacity-20 bottom-0 right-0"
-  />
+        {/* Hero Section */}
+        <div className="relative w-full h-[30vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-pink-100 via-white to-purple-100">
+          <motion.div
+            animate={{ x: [0, 30, 0], y: [0, 20, 0], rotate: [0, 360, 0] }}
+            transition={{ repeat: Infinity, duration: 15, ease: 'easeInOut' }}
+            className="absolute w-40 h-40 bg-pink-200 rounded-full opacity-20 -top-12 -left-8"
+          />
+          <motion.div
+            animate={{ x: [0, -40, 0], y: [0, -30, 0], rotate: [0, -360, 0] }}
+            transition={{ repeat: Infinity, duration: 18, ease: 'easeInOut' }}
+            className="absolute w-60 h-60 bg-purple-200 rounded-full opacity-20 bottom-0 right-0"
+          />
 
-  {/* Hero Content */}
-  <motion.div
-    initial={{ y: -30, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.8, ease: 'easeOut' }}
-    className="relative z-10 text-center px-4 md:px-8 max-w-3xl"
-  >
-    <h1 className="text-3xl sm:text-4xl font-extrabold text-green-900 drop-shadow-md">
-      Welcome, {user?.username || 'Back Sir '}!
-    </h1>
-    <p className="text-sm sm:text-base mt-2 text-gray-700">
-      Discover fresh groceries, unbeatable prices, and exclusive offers.
-    </p>
-    <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-      <motion.button
-        onClick={scrollToProducts}
-        whileHover={{ scale: 1.05, boxShadow: '0px 0px 15px rgba(34,197,94,0.3)' }}
-        whileTap={{ scale: 0.95 }}
-        className="px-6 py-2 sm:px-8 sm:py-3 bg-green-600 text-white rounded-full shadow-md hover:bg-green-700 transition-all duration-300"
-      >
-        Shop Now
-      </motion.button>
-    </div>
-  </motion.div>
-</div>
+          <motion.div
+            initial={{ y: -30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="relative z-10 text-center px-4 md:px-8 max-w-3xl"
+          >
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-purple-900 drop-shadow-md">
+              Welcome, {user?.username || 'Fashion Lover'}!
+            </h1>
+            <p className="text-sm sm:text-base mt-2 text-gray-700">
+              Explore latest trends, exclusive collections, and unbeatable fashion deals.
+            </p>
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <motion.button
+                onClick={scrollToProducts}
+                whileHover={{ scale: 1.05, boxShadow: '0px 0px 15px rgba(128,0,128,0.3)' }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-2 sm:px-8 sm:py-3 bg-purple-600 text-white rounded-full shadow-md hover:bg-purple-700 transition-all duration-300"
+              >
+                Shop Now
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
 
-{/* Offer Banners Carousel (Click does nothing) */}
-<div className="relative container mx-auto px-4 py-4 sm:py-6">
-  <AnimatePresence mode="wait">
-    <motion.div
-      key={currentBanner}
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -50 }}
-      transition={{ duration: 0.4 }}
-      className={`relative rounded-xl overflow-hidden shadow-md cursor-default`}
-    >
-      <img
-        src={banners[currentBanner].image}
-        alt={banners[currentBanner].text}
-        className="w-full h-36 sm:h-48 object-cover opacity-80"
-        loading="lazy"
-      />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <h2 className="text-base sm:text-lg font-semibold text-center px-2">
-          {banners[currentBanner].text}
-        </h2>
-      </div>
-    </motion.div>
-  </AnimatePresence>
-
-  {/* Navigation Dots */}
-  <div className="flex justify-center mt-2 gap-2">
-    {banners.map((_, index) => (
-      <button
-        key={index}
-        onClick={() => handleBannerChange(index)}
-        className={`w-2.5 h-2.5 rounded-full ${currentBanner === index ? 'bg-green-600' : 'bg-gray-300'} transition`}
-        aria-label={`Go to banner ${index + 1}`}
-      />
-    ))}
-  </div>
-</div>
-
+        {/* Banners Carousel */}
+        <div className="relative container mx-auto px-4 py-4 sm:py-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentBanner}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
+              className={`relative rounded-xl overflow-hidden shadow-md cursor-default`}
+            >
+              <img
+                src={banners[currentBanner].image}
+                alt={banners[currentBanner].text}
+                className="w-full h-48 sm:h-60 object-cover opacity-90"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h2 className="text-base sm:text-lg font-semibold text-center px-2">
+                  {banners[currentBanner].text}
+                </h2>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+          <div className="flex justify-center mt-2 gap-2">
+            {banners.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentBanner(index)}
+                className={`w-2.5 h-2.5 rounded-full ${
+                  currentBanner === index ? 'bg-purple-600' : 'bg-gray-300'
+                } transition`}
+              />
+            ))}
+          </div>
+        </div>
 
         {/* Category Filter */}
         <div className="container mx-auto px-4 py-6">
@@ -222,8 +201,7 @@ const Home = () => {
             <select
               value={selectedCategory || ''}
               onChange={(e) => setSelectedCategory(e.target.value || null)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              aria-label="Filter by category"
+              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option value="">All Categories</option>
               {categoryData.map((cat) => (
@@ -246,31 +224,29 @@ const Home = () => {
                   key={index}
                   className="bg-white rounded-lg p-4 h-36 grid gap-2 shadow-lg animate-pulse"
                 >
-                  <div className="bg-green-100 h-24 rounded-lg"></div>
-                  <div className="bg-green-100 h-6 rounded"></div>
+                  <div className="bg-purple-100 h-24 rounded-lg"></div>
+                  <div className="bg-purple-100 h-6 rounded"></div>
                 </div>
               ))
             : filteredCategories.map((cat) => (
                 <motion.div
                   key={cat._id}
                   onClick={() => handleRedirectProductListpage(cat._id, cat.name)}
-                  whileHover={{ scale: 1.1, boxShadow: '0px 15px 30px rgba(34,197,94,0.2)' }}
+                  whileHover={{ scale: 1.1, boxShadow: '0px 15px 30px rgba(128,0,128,0.2)' }}
                   whileTap={{ scale: 0.97 }}
-                  className="cursor-pointer bg-white rounded-xl p-4 flex flex-col items-center transition-all duration-300 hover:bg-green-50"
+                  className="cursor-pointer bg-white rounded-xl p-4 flex flex-col items-center transition-all duration-300 hover:bg-purple-50"
                 >
                   <img
                     src={cat.image || 'https://via.placeholder.com/80'}
                     alt={cat.name}
                     className="w-20 h-20 object-contain mb-2"
-                    loading="lazy"
                   />
                   <p className="text-sm font-semibold text-gray-700 text-center">{cat.name}</p>
                 </motion.div>
               ))}
         </div>
 
-
-        {/* Category-Wise Products */}
+        {/* Category-wise Products */}
         {filteredCategories.map((c) => (
           <motion.div
             key={c?._id + 'CategorywiseProduct'}
@@ -284,7 +260,7 @@ const Home = () => {
         ))}
 
         {/* Newsletter Signup */}
-        <div className="container mx-auto px-4 py-12 bg-gradient-to-r from-green-600 to-teal-600 rounded-2xl text-white">
+        <div className="container mx-auto px-4 py-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -292,8 +268,8 @@ const Home = () => {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h2 className="text-3xl font-bold mb-4">Stay Updated with Our Offers!</h2>
-            <p className="text-lg mb-6">Subscribe to our newsletter for exclusive deals and updates.</p>
+            <h2 className="text-3xl font-bold mb-4">Stay Trendy with Trendify!</h2>
+            <p className="text-lg mb-6">Subscribe to our newsletter for exclusive fashion updates.</p>
             <form onSubmit={handleNewsletterSignup} className="flex flex-col sm:flex-row justify-center gap-4">
               <input
                 type="email"
@@ -301,11 +277,10 @@ const Home = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 className="px-4 py-3 rounded-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-white w-full sm:w-80"
-                aria-label="Enter your email for newsletter"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-white text-green-600 rounded-full font-semibold hover:bg-gray-100 transition"
+                className="px-6 py-3 bg-white text-purple-600 rounded-full font-semibold hover:bg-gray-100 transition"
               >
                 Subscribe
               </button>

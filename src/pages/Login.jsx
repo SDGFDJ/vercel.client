@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'  // ✅ useEffect import किया
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { FaRegEye } from "react-icons/fa6";
 import toast from 'react-hot-toast';
@@ -19,28 +19,22 @@ const Login = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
+    // ✅ Scroll to top on component mount
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target
-
-        setData((preve) => {
-            return {
-                ...preve,
-                [name]: value
-            }
-        })
+        setData((preve) => ({ ...preve, [name]: value }))
     }
 
     const valideValue = Object.values(data).every(el => el)
 
-
     const handleSubmit = async(e)=>{
         e.preventDefault()
-
         try {
-            const response = await Axios({
-                ...SummaryApi.login,
-                data : data
-            })
+            const response = await Axios({ ...SummaryApi.login, data : data })
             
             if(response.data.error){
                 toast.error(response.data.message)
@@ -54,24 +48,17 @@ const Login = () => {
                 const userDetails = await fetchUserDetails()
                 dispatch(setUserDetails(userDetails.data))
 
-                setData({
-                    email : "",
-                    password : "",
-                })
+                setData({ email : "", password : "" })
                 navigate("/")
             }
-
         } catch (error) {
             AxiosToastError(error)
         }
-
-
-
     }
+
     return (
         <section className='w-full container mx-auto px-2'>
             <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
-
                 <form className='grid gap-4 py-4' onSubmit={handleSubmit}>
                     <div className='grid gap-1'>
                         <label htmlFor='email'>Email :</label>
@@ -98,20 +85,15 @@ const Login = () => {
                                 placeholder='Enter your password'
                             />
                             <div onClick={() => setShowPassword(preve => !preve)} className='cursor-pointer'>
-                                {
-                                    showPassword ? (
-                                        <FaRegEye />
-                                    ) : (
-                                        <FaRegEyeSlash />
-                                    )
-                                }
+                                { showPassword ? <FaRegEye /> : <FaRegEyeSlash /> }
                             </div>
                         </div>
                         <Link to={"/forgot-password"} className='block ml-auto hover:text-primary-200'>Forgot password ?</Link>
                     </div>
     
-                    <button disabled={!valideValue} className={` ${valideValue ? "bg-green-800 hover:bg-green-700" : "bg-gray-500" }    text-white py-2 rounded font-semibold my-3 tracking-wide`}>Login</button>
-
+                    <button disabled={!valideValue} className={`${valideValue ? "bg-green-800 hover:bg-green-700" : "bg-gray-500"} text-white py-2 rounded font-semibold my-3 tracking-wide`}>
+                        Login
+                    </button>
                 </form>
 
                 <p>
@@ -123,4 +105,3 @@ const Login = () => {
 }
 
 export default Login
-
