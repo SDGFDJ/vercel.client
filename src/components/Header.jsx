@@ -62,35 +62,39 @@ const Header = () => {
         </div>
       )}
 
-      {/* Top Section */}
-      {!(isSearchPage && isMobile) && (
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <Link to={"/"} className="flex items-center gap-2">
-            <img
-              src={logo}
-              alt="logo"
-              className="h-12 w-auto transition-transform duration-300 hover:scale-105"
-            />
-            <div className="hidden sm:flex flex-col">
-              <span className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500">
-                Trendify
-              </span>
-              <span className="text-xs text-gray-500 -mt-1">Fashion & More</span>
-            </div>
-          </Link>
+    {/* Top Section */}
+{!(isSearchPage && isMobile) && (
+  <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
+    
+    {/* Logo - Fix Left */}
+    <Link to={"/"} className="flex items-center gap-2 mr-auto">
+      <img
+        src={logo}
+        alt="logo"
+        className="h-12 w-auto transition-transform duration-300 hover:scale-105"
+      />
+      <div className="hidden sm:flex flex-col">
+        <span className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500">
+          Trendify
+        </span>
+        <span className="text-xs text-gray-500 -mt-1">Fashion & More</span>
+      </div>
+    </Link>
 
-          <div className="hidden lg:block flex-1 mx-6">
-            <Search className="w-full rounded-full border border-gray-200 shadow-sm px-3 py-2" />
-          </div>
+    {/* Search bar in middle */}
+    <div className="hidden lg:block flex-1 mx-6">
+      <Search className="w-full rounded-full border border-gray-200 shadow-sm px-3 py-2" />
+    </div>
 
-          <div className="flex items-center gap-4 lg:gap-6">
-            <button
-              onClick={goToWishlist}
-              className="p-2 rounded-full hover:bg-gray-100 text-red-500"
-              aria-label="Wishlist"
-            >
-              <FaHeart size={22} />
-            </button>
+    {/* Right side icons */}
+    <div className="flex items-center gap-4 lg:gap-6 ml-auto">
+      <button
+        onClick={goToWishlist}
+        className="p-2 rounded-full hover:bg-gray-100 text-red-500"
+        aria-label="Wishlist"
+      >
+        <FaHeart size={22} />
+      </button>
 
             {/* Desktop User & Cart */}
             <div className="hidden lg:flex items-center gap-4">
