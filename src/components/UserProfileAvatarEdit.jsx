@@ -24,7 +24,7 @@ const UserProfileAvatarEdit = ({close}) => {
         }
 
         const formData = new FormData()
-        formData.append('avatar',file)
+        formData.append('file',file)
 
         try {
             setLoading(true)

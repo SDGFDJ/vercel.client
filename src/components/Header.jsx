@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import logo from "../assets/logo3.jpeg";
 import Search from "./Search";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaRegCircleUser } from "react-icons/fa6";
 import { BsCart4 } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -30,12 +29,13 @@ const Header = () => {
 
   const redirectToLoginPage = () => navigate("/login");
 
-  const handleMobileUser = () => {
+  const handleUserClick = () => {
     if (!user._id) {
       showToast("Login required!");
       return navigate("/login");
     }
-    setOpenUserDrawer(true);
+    if (isMobile) setOpenUserDrawer(true);
+    else setOpenUserDropdown((prev) => !prev);
   };
 
   const goToWishlist = () => navigate("/dashboard/mywishlist");
@@ -46,133 +46,111 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (user?._id) {
-      showToast("Login successful!", 2000);
-    } else if (!user?._id && toastMessage === "") {
-      showToast("Logout successful!", 2000);
-    }
+    if (user?._id) showToast("Login successful!", 2000);
+    else if (!user?._id && toastMessage === "") showToast("Logout successful!", 2000);
   }, [user]);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
       {/* Toast */}
       {toastMessage && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-lg shadow z-50 text-sm">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-lg shadow text-sm z-50">
           {toastMessage}
         </div>
       )}
 
-    {/* Top Section */}
-{!(isSearchPage && isMobile) && (
-  <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
-    
-    {/* Logo - Fix Left */}
-    <Link to={"/"} className="flex items-center gap-2 mr-auto">
-      <img
-        src={logo}
-        alt="logo"
-        className="h-12 w-auto transition-transform duration-300 hover:scale-105"
-      />
-      <div className="hidden sm:flex flex-col">
-        <span className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500">
-          Trendify
-        </span>
-        <span className="text-xs text-gray-500 -mt-1">Fashion & More</span>
-      </div>
-    </Link>
+      {/* Top Section */}
+      {!(isSearchPage && isMobile) && (
+        <div className="flex items-center justify-between w-full max-w-full mx-auto px-2 sm:px-4 py-2 gap-2 lg:gap-4">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 flex-shrink-0 min-w-0">
+            <img
+              src={logo}
+              alt="logo"
+              className="h-10 sm:h-12 w-auto transition-transform duration-300 hover:scale-105"
+            />
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500 truncate">
+                Trendify
+              </span>
+              <span className="text-xs text-gray-500 -mt-0.5 truncate">Fashion & More</span>
+            </div>
+          </Link>
 
-    {/* Search bar in middle */}
-    <div className="hidden lg:block flex-1 mx-6">
-      <Search className="w-full rounded-full border border-gray-200 shadow-sm px-3 py-2" />
-    </div>
+          {/* Search bar */}
+          <div className="flex-1 mx-2 hidden lg:flex min-w-0">
+            <Search className="w-full rounded-full border border-gray-200 shadow-sm px-3 py-2 min-w-0" />
+          </div>
 
-    {/* Right side icons */}
-    <div className="flex items-center gap-4 lg:gap-6 ml-auto">
-      <button
-        onClick={goToWishlist}
-        className="p-2 rounded-full hover:bg-gray-100 text-red-500"
-        aria-label="Wishlist"
-      >
-        <FaHeart size={22} />
-      </button>
+          {/* Right Side */}
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-4 flex-shrink-0">
+            {/* Wishlist */}
+            <button
+              onClick={goToWishlist}
+              className="p-2 rounded-full hover:bg-gray-100 text-red-500 flex-shrink-0"
+            >
+              <FaHeart size={22} />
+            </button>
 
-            {/* Desktop User & Cart */}
-            <div className="hidden lg:flex items-center gap-4">
-              {user?._id ? (
-                <div className="relative">
-                  <div
-                    onClick={() => setOpenUserDropdown((p) => !p)}
-                    className="flex items-center gap-1 cursor-pointer px-3 py-1 rounded-full bg-gray-50 border hover:bg-gray-100 transition"
-                  >
-                    <img
-                      src={user?.avatar || "https://via.placeholder.com/40"}
-                      alt="avatar"
-                      className="w-7 h-7 rounded-full object-cover"
-                    />
-                    <span className="text-sm font-semibold">
-                      {user?.username || "Account"}
-                    </span>
-                  </div>
-                  {openUserDropdown && (
-                    <div className="absolute right-0 top-12 w-56 bg-white shadow-xl rounded-xl p-4 border border-gray-100 z-50">
-                      <UserMenu close={() => setOpenUserDropdown(false)} />
-                    </div>
-                  )}
+            {/* User Avatar */}
+            <div className="relative flex-shrink-0 min-w-0">
+              <button
+                onClick={handleUserClick}
+                className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-50 border hover:bg-gray-100 transition max-w-[140px] sm:max-w-[160px] truncate"
+              >
+                <img
+                  src={user?.avatar || "https://via.placeholder.com/40"}
+                  alt="avatar"
+                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                />
+                <span className="text-sm font-medium truncate hidden lg:inline">
+                  {user?.username || "Account"}
+                </span>
+              </button>
+
+              {/* Desktop Dropdown */}
+              {openUserDropdown && !isMobile && (
+                <div className="absolute right-0 top-12 w-56 bg-white shadow-xl rounded-xl p-4 border border-gray-100 z-50">
+                  <UserMenu close={() => setOpenUserDropdown(false)} />
                 </div>
-              ) : (
-                <button
-                  onClick={redirectToLoginPage}
-                  className="px-5 py-2 text-white font-semibold rounded-full bg-gradient-to-r from-purple-600 to-pink-500 shadow hover:scale-105 transition"
-                >
-                  Login
-                </button>
               )}
+            </div>
 
+            {/* Cart (only desktop) */}
+            {!isMobile && (
               <button
                 onClick={() => setOpenCartSection(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-600 to-emerald-500 text-white font-medium shadow hover:scale-105 transition"
+                className="flex items-center gap-1 sm:gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-green-600 to-emerald-500 text-white font-medium shadow hover:scale-105 transition flex-shrink-0 min-w-0"
               >
                 <BsCart4 size={22} />
-                <div className="text-sm">
+                <div className="text-sm flex flex-col min-w-0">
                   {cartItem[0] ? (
                     <>
-                      <p>{totalQty} Items</p>
-                      <p>{DisplayPriceInRupees(totalPrice)}</p>
+                      <p className="truncate">{totalQty} Items</p>
+                      <p className="truncate">{DisplayPriceInRupees(totalPrice)}</p>
                     </>
                   ) : (
-                    <p>My Cart</p>
+                    <p className="truncate">My Cart</p>
                   )}
                 </div>
               </button>
-            </div>
-
-            {/* Mobile User */}
-            <button
-              className="lg:hidden p-2 rounded-full hover:bg-gray-100 text-gray-700"
-              onClick={handleMobileUser}
-            >
-              <FaRegCircleUser size={24} />
-            </button>
-
-          
+            )}
           </div>
         </div>
       )}
 
       {/* Mobile Search */}
-      <div className="container mx-auto px-3 lg:hidden">
+      <div className="px-2 sm:px-3 lg:hidden py-2">
         <Search />
       </div>
 
       {/* Mobile Cart Drawer */}
       {openCartSection && (
         <>
-          {/* Overlay */}
           <div
             className="fixed inset-0 bg-black/40 z-40"
             onClick={() => setOpenCartSection(false)}
           />
-
           <div className="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300">
             <div className="flex items-center justify-between p-4 border-b">
               <button
@@ -209,7 +187,6 @@ const Header = () => {
               <UserMenu close={() => setOpenUserDrawer(false)} />
             </div>
           </div>
-
           <div
             className="fixed inset-0 bg-black/40 z-40"
             onClick={() => setOpenUserDrawer(false)}
