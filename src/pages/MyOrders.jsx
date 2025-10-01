@@ -143,7 +143,10 @@ const MyOrders = () => {
 
                   {/* Header */}
                   <div className="bg-blue-600 text-white px-3 py-2 flex justify-between items-center text-sm">
-                    <h2 className="font-medium">Order #{order.orderId}</h2>
+                    <div>
+                      <h2 className="font-medium">Order #{order.orderId}</h2>
+                      <p className="text-[10px]">{new Date(order.createdAt).toLocaleString()} ({timeAgo(order.createdAt)})</p>
+                    </div>
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                       order.payment_status === 'CANCELLED'
                         ? 'bg-red-500/20 text-red-100'
@@ -181,29 +184,35 @@ const MyOrders = () => {
                     <p className="font-semibold">Total: <span className="text-blue-600">₹{order.totalAmt}</span></p>
                   </div>
 
-                  {/* Status */}
+                  {/* Status Progress */}
                   <div className="px-3 pb-3">
-                    <h3 className="font-semibold text-gray-800 text-xs mb-1">Order Status</h3>
-                    <div className="flex items-center justify-between text-[9px]">
+                    <h3 className="font-semibold text-gray-800 text-xs mb-2">Order Progress</h3>
+                    <div className="flex items-center justify-between relative">
                       {statusStages.map((stage, index) => {
-                        let bgColor = 'bg-gray-200 text-gray-500';
-                        if (order.payment_status === 'COMPLETED') bgColor = 'bg-green-500 text-white';
-                        else if (order.payment_status === 'CANCELLED') bgColor = 'bg-red-500 text-white';
-                        else if (order.statusHistory?.some(s => s.status === stage)) bgColor = 'bg-blue-500 text-white';
-
-                        let lineColor = 'bg-gray-200';
-                        if (order.payment_status === 'COMPLETED') lineColor = 'bg-green-500';
-                        else if (order.payment_status === 'CANCELLED') lineColor = 'bg-red-500';
-                        else if (order.statusHistory?.some(s => s.status === statusStages[index + 1])) lineColor = 'bg-blue-500';
+                        const statusObj = order.statusHistory?.find(s => s.status === stage);
+                        let isCompleted = !!statusObj;
+                        let bgColor = isCompleted ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500';
 
                         return (
-                          <div key={stage} className="flex flex-col items-center flex-1 relative">
-                            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-medium ${bgColor}`}>
+                          <div key={stage} className="flex-1 flex flex-col items-center relative">
+                            {/* Circle */}
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${bgColor} z-10`}>
                               {index + 1}
                             </div>
-                            <span className="mt-1 text-center text-gray-600">{stage}</span>
+
+                            {/* Line */}
                             {index < statusStages.length - 1 && (
-                              <div className={`absolute top-2.5 h-0.5 w-full left-1/2 transform -translate-x-1/2 ${lineColor}`}></div>
+                              <div className={`absolute top-3 left-1/2 w-full h-1 -translate-x-1/2 ${order.statusHistory?.some(s => statusStages.indexOf(s.status) > index) ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
+                            )}
+
+                            {/* Stage Name */}
+                            <span className="mt-1 text-[9px] text-center">{stage}</span>
+
+                            {/* Timestamp */}
+                            {statusObj && (
+                              <span className="mt-0.5 text-[8px] text-gray-500">
+                                {new Date(statusObj.updatedAt).toLocaleString()} ({timeAgo(statusObj.updatedAt)})
+                              </span>
                             )}
                           </div>
                         );
@@ -240,6 +249,7 @@ const MyOrders = () => {
                       ))
                     }
                   </div>
+
                 </div>
               );
             })}

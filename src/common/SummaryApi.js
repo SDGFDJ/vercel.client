@@ -1,10 +1,12 @@
-// .env से baseURL लाना
+// .env से baseURL लेना
 export const baseURL = import.meta.env.VITE_API_URL;
 
 const SummaryApi = {
   // User
   register: { url: '/api/user/register', method: 'post' },
   login: { url: '/api/user/login', method: 'post' },
+  googleLogin: { url: '/api/user/google-login', method: 'post' },       // ✅ Google login
+  googleRegister: { url: '/api/user/google-register', method: 'post' }, // ✅ Google register
   forgot_password: { url: "/api/user/forgot-password", method: 'put' },
   forgot_password_otp_verification: { url: '/api/user/verify-forgot-password-otp', method: 'put' },
   resetPassword: { url: "/api/user/reset-password", method: 'put' },
@@ -55,11 +57,10 @@ const SummaryApi = {
   getOrderItems: { url: '/api/order/order-list', method: 'get' },
 
   wishlist: {
-  add: { url: "/api/wishlist/add", method: "POST" },
-  remove: { url: "/api/wishlist/remove", method: "POST" },
-  get: { url: "/api/wishlist/get", method: "GET" },
-},
-
+    add: { url: "/api/wishlist/add", method: "POST" },
+    remove: { url: "/api/wishlist/remove", method: "POST" },
+    get: { url: "/api/wishlist/get", method: "GET" },
+  },
 
   // Admin Orders
   getAllOrders: { url: '/api/order/admin/orders', method: 'get' },
