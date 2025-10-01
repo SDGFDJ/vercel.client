@@ -5,7 +5,6 @@ import Axios from '../utils/Axios';
 import Loading from '../components/Loading';
 import ProductCardAdmin from '../components/ProductCardAdmin';
 import { IoSearchOutline } from "react-icons/io5";
-import EditProductAdmin from '../components/EditProductAdmin';
 
 const ProductAdmin = () => {
   const [productData, setProductData] = useState([]);
@@ -39,19 +38,23 @@ const ProductAdmin = () => {
     }
   };
 
+  // Scroll to top when component mounts
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchProductData();
   }, [page]);
 
   const handleNext = () => {
     if (page !== totalPageCount) {
       setPage((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const handlePrevious = () => {
     if (page > 1) {
       setPage((prev) => prev - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -61,19 +64,14 @@ const ProductAdmin = () => {
     setPage(1);
   };
 
+  // Search debounce
   useEffect(() => {
-    let flag = true;
-
-    const interval = setTimeout(() => {
-      if (flag) {
-        fetchProductData();
-        flag = false;
-      }
+    const timer = setTimeout(() => {
+      fetchProductData();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 300);
 
-    return () => {
-      clearTimeout(interval);
-    };
+    return () => clearTimeout(timer);
   }, [search]);
 
   return (
@@ -96,7 +94,7 @@ const ProductAdmin = () => {
       {/* Product Grid */}
       <div className="mt-6 bg-white shadow-md rounded-lg p-4">
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-8 !important overflow-y-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4 overflow-y-auto">
             {[...Array(12)].map((_, index) => (
               <div
                 key={index}
@@ -106,11 +104,11 @@ const ProductAdmin = () => {
           </div>
         ) : productData.length > 0 ? (
           <div className="min-h-[70vh] overflow-y-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-8 !important">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {productData.map((p, index) => (
                 <div
                   key={p._id || index}
-                  className="h-auto w-full max-h-96 flex flex-col justify-between debug"
+                  className="h-auto w-full max-h-96 flex flex-col justify-between"
                 >
                   <ProductCardAdmin
                     data={p}

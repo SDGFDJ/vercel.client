@@ -75,7 +75,9 @@ const ProductListPage = () => {
     }
   };
 
+  // Scroll to top on mount and page change
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchProductdata();
   }, [params, page]);
 
@@ -123,7 +125,6 @@ const ProductListPage = () => {
     setFilteredData(filtered);
   }, [searchTerm, minPrice, maxPrice, inStockOnly, sortOption, data]);
 
-  // Reset filters
   const clearFilters = () => {
     setMinPrice("");
     setMaxPrice("");
@@ -132,11 +133,10 @@ const ProductListPage = () => {
     setSearchTerm("");
   };
 
-  // Handle drawer toggle
   const toggleFilterDrawer = () => setShowFilter(!showFilter);
 
   return (
-    <section className="container mx-auto px-4 py-6 sticky top-16 lg:top-20">
+    <section className="container mx-auto px-4 py-6">
       <div className="grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-6">
         {/* Sidebar (Desktop) */}
         <div className="hidden lg:block bg-white shadow-lg rounded-xl p-6 min-h-[calc(100vh-160px)] max-h-[calc(100vh-160px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300">
@@ -234,7 +234,7 @@ const ProductListPage = () => {
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 pr-10"
+                  className="w-full p-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 pr-10 transition-all duration-300 shadow-sm"
                 />
                 {searchTerm && (
                   <button
@@ -273,7 +273,7 @@ const ProductListPage = () => {
                     key={p._id + "productSubCategory" + index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
                   >
                     <CardProduct data={p} />
                   </motion.div>

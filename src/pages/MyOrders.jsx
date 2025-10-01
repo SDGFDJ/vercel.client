@@ -38,11 +38,8 @@ const MyOrders = () => {
     try {
       setIsLoading(true);
       const { data } = await axios.get(`${API_URL}/order/order-list`, { withCredentials: true });
-      if (data?.success) {
-        dispatch(setOrder(data.data));
-      } else {
-        toast.error('Failed to fetch orders');
-      }
+      if (data?.success) dispatch(setOrder(data.data));
+      else toast.error('Failed to fetch orders');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Error fetching orders');
     } finally {
@@ -62,9 +59,7 @@ const MyOrders = () => {
       if (data.success) {
         toast.success(data.message);
         dispatch(updateOrderStatus({ orderId, status: "CANCELLED", payment_status: "CANCELLED" }));
-      } else {
-        toast.error(data.message || 'Failed to cancel order');
-      }
+      } else toast.error(data.message || 'Failed to cancel order');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Error cancelling order');
     } finally {
@@ -78,15 +73,11 @@ const MyOrders = () => {
       const { data } = await axios.post(`${API_URL}/order/admin/update-status`, { orderId, status }, { withCredentials: true });
       if (data.success) {
         toast.success(data.message);
-
-        let payment_status = undefined;
+        let payment_status;
         if (status === "DELIVERED") payment_status = "COMPLETED";
         if (status === "CANCELLED") payment_status = "CANCELLED";
-
         dispatch(updateOrderStatus({ orderId, status, payment_status }));
-      } else {
-        toast.error(data.message || 'Failed to update status');
-      }
+      } else toast.error(data.message || 'Failed to update status');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Error updating status');
     } finally {
@@ -96,7 +87,7 @@ const MyOrders = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-200">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-gray-700 text-lg font-semibold animate-pulse flex items-center gap-2">
           <svg className="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -108,29 +99,27 @@ const MyOrders = () => {
     );
   }
 
- // ✅ Filter logic updated for all tabs
-const filteredOrders = orders.filter(order => {
-  if (activeTab === 'newPending') return order.payment_status !== 'COMPLETED' && order.payment_status !== 'CANCELLED';
-  if (activeTab === 'completed') return order.payment_status === 'COMPLETED';
-  if (activeTab === 'cancelled') return order.payment_status === 'CANCELLED';
-  return true;
-});
-
+  const filteredOrders = orders.filter(order => {
+    if (activeTab === 'newPending') return order.payment_status !== 'COMPLETED' && order.payment_status !== 'CANCELLED';
+    if (activeTab === 'completed') return order.payment_status === 'COMPLETED';
+    if (activeTab === 'cancelled') return order.payment_status === 'CANCELLED';
+    return true;
+  });
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 py-8">
+    <section className="min-h-screen bg-gray-50 py-6">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-8 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 tracking-tight">
           {user.role === 'ADMIN' ? 'Manage Orders' : 'Your Orders'}
         </h1>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-3 mb-8 bg-white rounded-full p-1.5 shadow-sm">
+        <div className="flex flex-wrap gap-2 mb-6 bg-white rounded-full p-1.5 shadow-sm">
           {['newPending', 'completed', 'cancelled'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-2 px-4 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 ${
+              className={`flex-1 py-1.5 px-3 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 ${
                 activeTab === tab
                   ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white shadow-md'
                   : 'bg-transparent text-gray-600 hover:bg-gray-100'
@@ -141,163 +130,115 @@ const filteredOrders = orders.filter(order => {
           ))}
         </div>
 
-        {filteredOrders.length === 0 ? (
-          <NoData />
-        ) : (
-          <div className="space-y-6">
+        {filteredOrders.length === 0 ? <NoData /> : (
+          <div className="space-y-4">
             {filteredOrders.map(order => {
-              const productDetails = Array.isArray(order.product_details)
-                ? order.product_details
-                : [order.product_details].filter(Boolean);
+              const productDetails = Array.isArray(order.product_details) ? order.product_details : [order.product_details].filter(Boolean);
               const currentStatusIndex = order.statusHistory
                 ? Math.max(...order.statusHistory.map(s => statusStages.indexOf(s.status)), -1)
                 : -1;
 
               return (
-                <div
-                  key={order.orderId}
-                  className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg"
-                >
-                  <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-4 py-3">
-                    <div className="flex justify-between items-center">
-                      <h2 className="text-sm font-semibold">
-                        Order #{order.orderId}
-                      </h2>
-                      <span
-                        className={`text-xs font-medium px-2 py-1 rounded-full ${
-                          order.payment_status === 'CANCELLED'
-                            ? 'bg-red-500/20 text-red-100'
-                            : order.payment_status === 'COMPLETED'
-                            ? 'bg-green-500/20 text-green-100'
-                            : 'bg-blue-500/20 text-blue-100'
-                        }`}
-                      >
-                        {order.payment_status}
-                      </span>
-                    </div>
-                    <p className="text-xs text-blue-100 mt-1">
-                      {timeAgo(order.createdAt)} • {order.orderTimeFormatted}
-                    </p>
+                <div key={order.orderId} className="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+
+                  {/* Header */}
+                  <div className="bg-blue-600 text-white px-3 py-2 flex justify-between items-center text-sm">
+                    <h2 className="font-medium">Order #{order.orderId}</h2>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                      order.payment_status === 'CANCELLED'
+                        ? 'bg-red-500/20 text-red-100'
+                        : order.payment_status === 'COMPLETED'
+                        ? 'bg-green-500/20 text-green-100'
+                        : 'bg-blue-500/20 text-blue-100'
+                    }`}>
+                      {order.payment_status}
+                    </span>
                   </div>
 
-                  <div className="p-4">
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <div className="text-xs text-gray-600 space-y-1">
-                          <p>
-                            <span className="font-medium">Customer:</span>{' '}
-                            {order.delivery_address?.name || order.userId?.name || 'Unknown'}
-                          </p>
-                          <p>
-                            <span className="font-medium">Address:</span>{' '}
-                            {[order.delivery_address?.building, order.delivery_address?.street, order.delivery_address?.city, order.delivery_address?.postalCode]
-                              .filter(Boolean)
-                              .join(', ')}
-                          </p>
-                          <p>
-                            <span className="font-medium">Mobile:</span>{' '}
-                            {order.delivery_address?.mobile || order.userId?.mobile || 'N/A'}
-                          </p>
+                  {/* Customer & Items */}
+                  <div className="p-3 text-xs text-gray-700 space-y-2">
+                    <p><span className="font-medium">Customer:</span> {order.delivery_address?.name || order.userId?.name || 'Unknown'}</p>
+                    <p><span className="font-medium">Address:</span> {[order.delivery_address?.building, order.delivery_address?.street, order.delivery_address?.city, order.delivery_address?.postalCode].filter(Boolean).join(', ')}</p>
+                    <p><span className="font-medium">Mobile:</span> {order.delivery_address?.mobile || order.userId?.mobile || 'N/A'}</p>
+
+                    <h3 className="font-semibold mt-2">Items:</h3>
+                    {productDetails.length > 0 ? (
+                      productDetails.map((product, index) => (
+                        <div key={index} className="flex items-center gap-2 mb-2">
+                          {product.image?.length > 0 ? (
+                            <img src={product.image[0]} alt={product.name} className="w-10 h-10 object-contain rounded border border-gray-200" />
+                          ) : (
+                            <div className="w-10 h-10 bg-gray-100 flex items-center justify-center text-[9px] text-gray-500 rounded border border-gray-200">No Image</div>
+                          )}
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-800">{product.name || 'Unknown Product'}</p>
+                            <p>Qty: {product.quantity || 1}</p>
+                            <p>₹{product.subTotalAmt || 0}</p>
+                          </div>
                         </div>
-                      </div>
+                      ))
+                    ) : <p>No products found</p>}
+                    <p className="font-semibold">Total: <span className="text-blue-600">₹{order.totalAmt}</span></p>
+                  </div>
 
-                      <div>
-                        <h3 className="text-xs font-semibold text-gray-800 mb-2">Items</h3>
-                        {productDetails.length > 0 ? (
-                          productDetails.map((product, index) => (
-                            <div key={index} className="flex gap-3 items-center mb-3">
-                              {product.image?.length > 0 ? (
-                                <img
-                                  src={product.image[0]}
-                                  alt={product.name}
-                                  className="w-12 h-12 object-contain rounded-md border border-gray-200"
-                                />
-                              ) : (
-                                <div className="w-12 h-12 bg-gray-100 flex items-center justify-center text-[10px] text-gray-500 rounded-md border border-gray-200">
-                                  No Image
-                                </div>
-                              )}
-                              <div className="flex-1">
-                                <p className="text-xs font-semibold text-gray-800">
-                                  {product.name || 'Unknown Product'}
-                                </p>
-                                <p className="text-xs text-gray-600">Qty: {product.quantity || 1}</p>
-                                <p className="text-xs text-gray-600">₹{product.subTotalAmt || 0}</p>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-xs text-gray-500">No products found</p>
-                        )}
-                        <p className="text-xs font-semibold text-gray-800">
-                          Total: <span className="text-blue-600">₹{order.totalAmt}</span>
-                        </p>
-                      </div>
-                    </div>
+                  {/* Status */}
+                  <div className="px-3 pb-3">
+                    <h3 className="font-semibold text-gray-800 text-xs mb-1">Order Status</h3>
+                    <div className="flex items-center justify-between text-[9px]">
+                      {statusStages.map((stage, index) => {
+                        let bgColor = 'bg-gray-200 text-gray-500';
+                        if (order.payment_status === 'COMPLETED') bgColor = 'bg-green-500 text-white';
+                        else if (order.payment_status === 'CANCELLED') bgColor = 'bg-red-500 text-white';
+                        else if (order.statusHistory?.some(s => s.status === stage)) bgColor = 'bg-blue-500 text-white';
 
-                    <div className="mt-4">
-                      <h3 className="text-xs font-semibold text-gray-800 mb-2">Order Status</h3>
-                      <div className="relative flex items-center">
-                        {statusStages.map((stage, index) => (
-                          <div key={stage} className="flex-1 flex flex-col items-center">
-                            <div
-                              className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-medium ${
-                                order.statusHistory?.some(s => s.status === stage)
-                                  ? 'bg-blue-500 text-white'
-                                  : 'bg-gray-200 text-gray-500'
-                              }`}
-                            >
+                        let lineColor = 'bg-gray-200';
+                        if (order.payment_status === 'COMPLETED') lineColor = 'bg-green-500';
+                        else if (order.payment_status === 'CANCELLED') lineColor = 'bg-red-500';
+                        else if (order.statusHistory?.some(s => s.status === statusStages[index + 1])) lineColor = 'bg-blue-500';
+
+                        return (
+                          <div key={stage} className="flex flex-col items-center flex-1 relative">
+                            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-medium ${bgColor}`}>
                               {index + 1}
                             </div>
-                            <p className="text-[10px] text-gray-600 mt-1 text-center">{stage}</p>
+                            <span className="mt-1 text-center text-gray-600">{stage}</span>
                             {index < statusStages.length - 1 && (
-                              <div
-                                className={`absolute top-3 h-0.5 w-[calc(100%/${statusStages.length-1})] ${
-                                  order.statusHistory?.some(s => s.status === statusStages[index + 1])
-                                    ? 'bg-blue-500'
-                                    : 'bg-gray-200'
-                                }`}
-                                style={{ left: `calc(${index} * 100% / ${statusStages.length - 1})` }}
-                              ></div>
+                              <div className={`absolute top-2.5 h-0.5 w-full left-1/2 transform -translate-x-1/2 ${lineColor}`}></div>
                             )}
                           </div>
-                        ))}
-                      </div>
+                        );
+                      })}
                     </div>
+                  </div>
 
-                    <div className="mt-4 flex gap-2 flex-wrap">
-                      {/* User Cancel Button */}
-                      {user.role !== 'ADMIN' && order.payment_status !== 'CANCELLED' && order.payment_status !== 'COMPLETED' && (
+                  {/* Actions */}
+                  <div className="px-3 pb-3 flex flex-wrap gap-2">
+                    {user.role !== 'ADMIN' && order.payment_status !== 'CANCELLED' && order.payment_status !== 'COMPLETED' && (
+                      <button
+                        onClick={() => handleCancelOrder(order.orderId)}
+                        disabled={loadingOrderId === order.orderId}
+                        className="px-2 py-1 bg-red-500 text-white rounded-full text-[10px] font-medium hover:bg-red-600 disabled:opacity-50"
+                      >
+                        {loadingOrderId === order.orderId ? 'Cancelling...' : 'Cancel'}
+                      </button>
+                    )}
+
+                    {user.role === 'ADMIN' && statusStages
+                      .filter((status, idx) => {
+                        if (order.payment_status === 'COMPLETED' || order.payment_status === 'CANCELLED') return false;
+                        return idx > currentStatusIndex;
+                      })
+                      .map(status => (
                         <button
-                          onClick={() => handleCancelOrder(order.orderId)}
+                          key={status}
+                          onClick={() => handleUpdateStatus(order.orderId, status)}
                           disabled={loadingOrderId === order.orderId}
-                          className="px-3 py-1.5 bg-red-500 text-white rounded-full text-xs font-medium hover:bg-red-600 disabled:opacity-50 transition-all duration-300"
+                          className="px-2 py-1 bg-blue-500 text-white rounded-full text-[10px] font-medium hover:bg-blue-600 disabled:opacity-50"
                         >
-                          {loadingOrderId === order.orderId ? 'Cancelling...' : 'Cancel Order'}
+                          {loadingOrderId === order.orderId ? 'Updating...' : status}
                         </button>
-                      )}
-
-                      {/* Admin Status Buttons */}
-                      {user.role === 'ADMIN' && (
-                        <div className="flex gap-2 flex-wrap">
-                          {statusStages
-                            .filter((status, idx) => {
-                              if (order.payment_status === 'COMPLETED' || order.payment_status === 'CANCELLED') return false;
-                              return idx > currentStatusIndex; // सिर्फ आगे वाले दिखाएं
-                            })
-                            .map(status => (
-                              <button
-                                key={status}
-                                onClick={() => handleUpdateStatus(order.orderId, status)}
-                                disabled={loadingOrderId === order.orderId}
-                                className="px-2 py-1 bg-blue-500 text-white rounded-full text-[10px] font-medium hover:bg-blue-600 disabled:opacity-50 transition-all duration-300"
-                              >
-                                {loadingOrderId === order.orderId ? 'Updating...' : `Set ${status}`}
-                              </button>
-                            ))}
-                        </div>
-                      )}
-                    </div>
+                      ))
+                    }
                   </div>
                 </div>
               );
