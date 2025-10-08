@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://www.nexebay.com/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/search</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/login</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/register</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/forgot-password</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/privacy-policy</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/return-policy</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/dashboard/profile</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/dashboard/myorders</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/cart</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/checkout</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/success</loc>
+  </url>
+
+  <url>
+    <loc>https://www.nexebay.com/cancel</loc>
+  </url>
+
+</urlset>
