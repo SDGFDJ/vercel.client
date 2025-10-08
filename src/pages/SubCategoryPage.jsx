@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import UploadSubCategoryModel from '../components/UploadSubCategoryModel'
-import AxiosToastError from '../utils/AxiosToastError'
-import Axios from '../utils/Axios'
-import SummaryApi from '../common/SummaryApi'
-import DisplayTable from '../components/DisplayTable'
-import { createColumnHelper } from '@tanstack/react-table'
-import ViewImage from '../components/ViewImage'
+import React, { useEffect, useState } from 'react';
+import UploadSubCategoryModel from '../components/UploadSubCategoryModel';
+import AxiosToastError from '../utils/AxiosToastError';
+import Axios from '../utils/Axios';
+import SummaryApi from '../common/SummaryApi';
+import DisplayTable from '../components/DisplayTable';
+import { createColumnHelper } from '@tanstack/react-table';
+import ViewImage from '../components/ViewImage';
 import { HiPencil } from "react-icons/hi";
 import { MdDelete  } from "react-icons/md";
-import EditSubCategory from '../components/EditSubCategory'
-import CofirmBox from '../components/CofirmBox'
-import toast from 'react-hot-toast'
+import EditSubCategory from '../components/EditSubCategory';
+import CofirmBox from '../components/CofirmBox';
+import toast from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async'; // ✅ SEO
 
 const SubCategoryPage = () => {
-  const [openAddSubCategory,setOpenAddSubCategory] = useState(false)
-  const [data,setData] = useState([])
-  const [loading,setLoading] = useState(false)
-  const columnHelper = createColumnHelper()
-  const [ImageURL,setImageURL] = useState("")
-  const [openEdit,setOpenEdit] = useState(false)
-  const [editData,setEditData] = useState({ _id : "" })
-  const [deleteSubCategory,setDeleteSubCategory] = useState({ _id : "" })
-  const [openDeleteConfirmBox,setOpenDeleteConfirmBox] = useState(false)
+  const [openAddSubCategory,setOpenAddSubCategory] = useState(false);
+  const [data,setData] = useState([]);
+  const [loading,setLoading] = useState(false);
+  const columnHelper = createColumnHelper();
+  const [ImageURL,setImageURL] = useState("");
+  const [openEdit,setOpenEdit] = useState(false);
+  const [editData,setEditData] = useState({ _id : "" });
+  const [deleteSubCategory,setDeleteSubCategory] = useState({ _id : "" });
+  const [openDeleteConfirmBox,setOpenDeleteConfirmBox] = useState(false);
 
   const fetchSubCategory = async()=> {
     try {
@@ -38,7 +39,6 @@ const SubCategoryPage = () => {
   }
 
   useEffect(()=> {
-    // Page top se open ho
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
     fetchSubCategory()
   },[])
@@ -106,7 +106,13 @@ const SubCategoryPage = () => {
 
   return (
     <section className='p-2'>
-      {/* Header */}
+      {/* ✅ SEO for public view */}
+      <Helmet>
+        <title>All Sub Categories | Binkeyit</title>
+        <meta name="description" content="Explore all sub categories of products on Binkeyit. Browse images, category names and details." />
+        <meta name="keywords" content="sub categories, products, Binkeyit, online shopping, categories" />
+      </Helmet>
+
       <div className='p-2 bg-white shadow-md flex items-center justify-between rounded-md mb-2'>
         <h2 className='font-semibold text-lg'>Sub Category</h2>
         <button
@@ -117,28 +123,16 @@ const SubCategoryPage = () => {
         </button>
       </div>
 
-      {/* Table */}
       <div className='overflow-auto w-full max-w-[95vw]'>
         <DisplayTable data={data} column={column} />
       </div>
 
-      {/* Add Modal */}
-      {openAddSubCategory && (
-        <UploadSubCategoryModel close={()=>setOpenAddSubCategory(false)} fetchData={fetchSubCategory}/>
-      )}
-
-      {/* View Image Modal */}
+      {openAddSubCategory && <UploadSubCategoryModel close={()=>setOpenAddSubCategory(false)} fetchData={fetchSubCategory}/>}
       {ImageURL && <ViewImage url={ImageURL} close={()=>setImageURL("")}/>}
-
-      {/* Edit Modal */}
       {openEdit && <EditSubCategory data={editData} close={()=>setOpenEdit(false)} fetchData={fetchSubCategory}/>}
-
-      {/* Confirm Delete Modal */}
-      {openDeleteConfirmBox && (
-        <CofirmBox cancel={()=>setOpenDeleteConfirmBox(false)} close={()=>setOpenDeleteConfirmBox(false)} confirm={handleDeleteSubCategory}/>
-      )}
+      {openDeleteConfirmBox && <CofirmBox cancel={()=>setOpenDeleteConfirmBox(false)} close={()=>setOpenDeleteConfirmBox(false)} confirm={handleDeleteSubCategory}/>}
     </section>
   )
 }
 
-export default SubCategoryPage
+export default SubCategoryPage;

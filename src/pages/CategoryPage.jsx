@@ -8,7 +8,7 @@ import EditCategory from '../components/EditCategory'
 import CofirmBox from '../components/CofirmBox'
 import toast from 'react-hot-toast'
 import AxiosToastError from '../utils/AxiosToastError'
-import { useSelector } from 'react-redux'
+import { Helmet } from 'react-helmet-async'
 
 const CategoryPage = () => {
     const [openUploadCategory, setOpenUploadCategory] = useState(false)
@@ -54,16 +54,43 @@ const CategoryPage = () => {
     }
 
     useEffect(() => {
-        // Page hamesha top se start ho
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
         fetchCategory()
     }, [])
 
     return (
         <section className=''>
+            {/* SEO Tags */}
+            <Helmet>
+                <title>Manage Categories - Nexebay Admin</title>
+                <meta
+                    name="description"
+                    content="Admin panel to manage product categories at Nexebay. Add, edit, or delete categories for your e-commerce store."
+                />
+                <meta
+                    name="keywords"
+                    content="Nexebay admin, category management, add category, edit category, delete category, e-commerce admin panel"
+                />
+                <link rel="canonical" href="https://www.nexebay.com/dashboard/category" />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "ItemList",
+                        "name": "Nexebay Categories",
+                        "description": "List of product categories managed by the admin.",
+                        "itemListElement": categoryData.map((cat, index) => ({
+                            "@type": "ListItem",
+                            "position": index + 1,
+                            "name": cat.name,
+                            "image": cat.image
+                        }))
+                    })}
+                </script>
+            </Helmet>
+
             {/* Header Section */}
             <div className='p-2 bg-white shadow-md flex items-center justify-between'>
-                <h2 className='font-semibold'>Category</h2>
+                <h2 className='font-semibold'>Category Management</h2>
                 <button
                     onClick={() => setOpenUploadCategory(true)}
                     className='text-sm border border-primary-200 hover:bg-primary-200 px-3 py-1 rounded'
@@ -111,17 +138,13 @@ const CategoryPage = () => {
             {/* Loading */}
             {loading && <Loading />}
 
-            {/* Upload Category Modal */}
+            {/* Modals */}
             {openUploadCategory && (
                 <UploadCategoryModel fetchData={fetchCategory} close={() => setOpenUploadCategory(false)} />
             )}
-
-            {/* Edit Category Modal */}
             {openEdit && (
                 <EditCategory data={editData} close={() => setOpenEdit(false)} fetchData={fetchCategory} />
             )}
-
-            {/* Confirm Delete Modal */}
             {openConfimBoxDelete && (
                 <CofirmBox
                     close={() => setOpenConfirmBoxDelete(false)}

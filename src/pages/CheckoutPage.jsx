@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../provider/GlobalProvider';
 import { DisplayPriceInRupees } from '../utils/DisplayPriceInRupees';
 import AddAddress from '../components/AddAddress';
@@ -9,6 +9,7 @@ import SummaryApi from '../common/SummaryApi';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
+import { Helmet } from 'react-helmet-async';
 
 const CheckoutPage = () => {
   const { notDiscountTotalPrice, totalQty, fetchCartItem, fetchOrder } = useGlobalContext();
@@ -23,9 +24,7 @@ const CheckoutPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Calculate totalAmt as sum of subTotalAmt from cartItemsList
   const totalAmt = cartItemsList.reduce((sum, item) => sum + (item.subTotalAmt || 0), 0).toFixed(2);
-
   const getSelectedAddress = () => addressList[selectAddress] || {};
 
   const handleCashOnDelivery = async () => {
@@ -38,17 +37,7 @@ const CheckoutPage = () => {
         data: {
           list_items: cartItemsList,
           totalAmt: Number(totalAmt),
-          address: {
-            name: selectedAddress.name || "Unknown",
-            building: selectedAddress.building || "",
-            address_line: selectedAddress.address_line || "",
-            district: selectedAddress.district || "",
-            city: selectedAddress.city || "",
-            state: selectedAddress.state || "",
-            country: selectedAddress.country || "",
-            pincode: selectedAddress.pincode || "",
-            mobile: selectedAddress.mobile || ""
-          }
+          address: selectedAddress
         }
       });
 
@@ -94,6 +83,41 @@ const CheckoutPage = () => {
 
   return (
     <section className="bg-gray-100 min-h-screen py-8">
+      {/* SEO Tags */}
+      <Helmet>
+        <title>Checkout - Complete Your Order | Nexebay</title>
+        <meta
+          name="description"
+          content="Checkout at Nexebay. Select your delivery address, review your order summary, and pay online or via Cash on Delivery. Secure and fast checkout."
+        />
+        <meta
+          name="keywords"
+          content="Nexebay checkout, e-commerce checkout, online payment, cash on delivery, review order, delivery address"
+        />
+        <link rel="canonical" href="https://www.nexebay.com/checkout" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CheckoutPage",
+            "name": "Nexebay Checkout",
+            "description": "Secure checkout page to complete your order at Nexebay.",
+            "mainEntity": cartItemsList.map((item, index) => ({
+              "@type": "Product",
+              "position": index + 1,
+              "name": item.productId?.name || "Unknown Product",
+              "image": item.productId?.image[0] || "",
+              "sku": item.productId?._id || "",
+              "offers": {
+                "@type": "Offer",
+                "price": item.subTotalAmt || 0,
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock"
+              }
+            }))
+          })}
+        </script>
+      </Helmet>
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
         <div className="flex flex-col lg:flex-row gap-8">
@@ -104,11 +128,7 @@ const CheckoutPage = () => {
               {addressList.map((address, index) => {
                 if (!address.status) return null;
                 return (
-                  <label
-                    key={index}
-                    htmlFor={`address${index}`}
-                    className="cursor-pointer"
-                  >
+                  <label key={index} htmlFor={`address${index}`} className="cursor-pointer">
                     <div
                       className={`border rounded-lg p-4 flex gap-4 transition-all duration-200 ${
                         selectAddress === index
@@ -130,8 +150,7 @@ const CheckoutPage = () => {
                         <p>{address.building}</p>
                         <p>{address.address_line}</p>
                         <p>
-                          {address.city}, {address.district}, {address.state},{' '}
-                          {address.country} - {address.pincode}
+                          {address.city}, {address.district}, {address.state}, {address.country} - {address.pincode}
                         </p>
                         <p>Mobile: {address.mobile}</p>
                       </div>

@@ -6,16 +6,19 @@ import { RouterProvider } from 'react-router-dom';
 import router from './route/index';
 import { Provider } from 'react-redux';
 import { store } from './store/store.js';
+import { HelmetProvider } from 'react-helmet-async';
 
 // ✅ Google OAuth
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>
-  <GoogleOAuthProvider clientId="870422755736-89s1avp04108fa1esvapujrqriq6cps3.apps.googleusercontent.com">
-    <Provider store={store}>
-      <RouterProvider router={router}/>
-    </Provider>
-  </GoogleOAuthProvider>
-  // </StrictMode>,
-)
+  <StrictMode>
+    <HelmetProvider>
+      <GoogleOAuthProvider clientId="870422755736-89s1avp04108fa1esvapujrqriqriq6cps3.apps.googleusercontent.com">
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
+      </GoogleOAuthProvider>
+    </HelmetProvider>
+  </StrictMode>
+);

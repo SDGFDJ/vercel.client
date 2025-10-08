@@ -12,6 +12,7 @@ import AddFieldComponent from '../components/AddFieldComponent';
 import AxiosToastError from '../utils/AxiosToastError';
 import successAlert from '../utils/SuccessAlert';
 import toast from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async'; // ✅ SEO
 
 const UploadProduct = () => {
   const [data, setData] = useState({
@@ -38,14 +39,9 @@ const UploadProduct = () => {
   const [selectCategory, setSelectCategory] = useState("");
   const [selectSubCategory, setSelectSubCategory] = useState("");
 
-  // ✅ Auto-refresh once when page loads
+  // ✅ Page top se open hone ke liye
   useEffect(() => {
-    if (!sessionStorage.getItem('reloaded')) {
-      sessionStorage.setItem('reloaded', 'true');
-      window.location.reload();
-    } else {
-      sessionStorage.removeItem('reloaded');
-    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
 
   const handleChange = (e) => {
@@ -124,6 +120,13 @@ const UploadProduct = () => {
 
   return (
     <section className=''>
+      {/* ✅ SEO */}
+      <Helmet>
+        <title>Upload Product | Binkeyit</title>
+        <meta name="description" content="Upload new products to Nexebay including images, categories, and details." />
+        <meta name="keywords" content="upload product, add product, Nexebay admin, product images, product details" />
+      </Helmet>
+
       <div className='p-2 bg-white shadow-md flex items-center justify-between'>
         <h2 className='font-semibold'>Upload Product</h2>
       </div>

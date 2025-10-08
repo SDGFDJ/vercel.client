@@ -4,6 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import NoData from '../components/NoData';
 import { setOrder, updateOrderStatus } from '../redux/orderSlice';
+import { Helmet } from 'react-helmet-async';
 
 const statusStages = ["PLACED", "CONFIRMED", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"];
 
@@ -107,14 +108,25 @@ const MyOrders = () => {
   });
 
   return (
-    <section className="min-h-screen bg-gray-50 py-6">
+    <section className="min-h-screen bg-gray-50 py-6 overflow-x-hidden">
+      <Helmet>
+        <title>{user.role === 'ADMIN' ? 'Manage Orders - Nexebay' : 'My Orders - Nexebay'}</title>
+        <meta name="description" content="View and manage your orders on Nexebay. Track shipping status, delivery updates, and order history." />
+        <meta name="keywords" content="Nexebay orders, my orders, order tracking, manage orders, online shopping" />
+        <link rel="canonical" href="https://www.nexebay.com/my-orders" />
+        <meta property="og:title" content="Nexebay Orders" />
+        <meta property="og:description" content="View and manage your orders on Nexebay. Track shipping status, delivery updates, and order history." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.nexebay.com/my-orders" />
+        <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=My+Orders+Nexebay" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 tracking-tight">
-          {user.role === 'ADMIN' ? 'Manage Orders' : 'Your Orders'}
-        </h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 tracking-tight">{user.role === 'ADMIN' ? 'Manage Orders' : 'Your Orders'}</h1>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mb-6 bg-white rounded-full p-1.5 shadow-sm">
+        <div className="flex flex-wrap gap-2 mb-6 bg-white rounded-full p-1.5 shadow-sm overflow-x-auto">
           {['newPending', 'completed', 'cancelled'].map(tab => (
             <button
               key={tab}
@@ -159,7 +171,7 @@ const MyOrders = () => {
                   </div>
 
                   {/* Customer & Items */}
-                  <div className="p-3 text-xs text-gray-700 space-y-2">
+                  <div className="p-3 text-xs text-gray-700 space-y-2 overflow-x-auto">
                     <p><span className="font-medium">Customer:</span> {order.delivery_address?.name || order.userId?.name || 'Unknown'}</p>
                     <p><span className="font-medium">Address:</span> {[order.delivery_address?.building, order.delivery_address?.street, order.delivery_address?.city, order.delivery_address?.postalCode].filter(Boolean).join(', ')}</p>
                     <p><span className="font-medium">Mobile:</span> {order.delivery_address?.mobile || order.userId?.mobile || 'N/A'}</p>
@@ -173,7 +185,7 @@ const MyOrders = () => {
                           ) : (
                             <div className="w-10 h-10 bg-gray-100 flex items-center justify-center text-[9px] text-gray-500 rounded border border-gray-200">No Image</div>
                           )}
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-[120px]">
                             <p className="font-medium text-gray-800">{product.name || 'Unknown Product'}</p>
                             <p>Qty: {product.quantity || 1}</p>
                             <p>₹{product.subTotalAmt || 0}</p>
@@ -185,9 +197,9 @@ const MyOrders = () => {
                   </div>
 
                   {/* Status Progress */}
-                  <div className="px-3 pb-3">
+                  <div className="px-3 pb-3 overflow-x-auto">
                     <h3 className="font-semibold text-gray-800 text-xs mb-2">Order Progress</h3>
-                    <div className="flex items-center justify-between relative">
+                    <div className="flex items-center justify-between relative min-w-[360px]">
                       {statusStages.map((stage, index) => {
                         const statusObj = order.statusHistory?.find(s => s.status === stage);
                         let isCompleted = !!statusObj;
@@ -195,24 +207,15 @@ const MyOrders = () => {
 
                         return (
                           <div key={stage} className="flex-1 flex flex-col items-center relative">
-                            {/* Circle */}
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center ${bgColor} z-10`}>
                               {index + 1}
                             </div>
-
-                            {/* Line */}
                             {index < statusStages.length - 1 && (
                               <div className={`absolute top-3 left-1/2 w-full h-1 -translate-x-1/2 ${order.statusHistory?.some(s => statusStages.indexOf(s.status) > index) ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
                             )}
-
-                            {/* Stage Name */}
                             <span className="mt-1 text-[9px] text-center">{stage}</span>
-
-                            {/* Timestamp */}
                             {statusObj && (
-                              <span className="mt-0.5 text-[8px] text-gray-500">
-                                {new Date(statusObj.updatedAt).toLocaleString()} ({timeAgo(statusObj.updatedAt)})
-                              </span>
+                              <span className="mt-0.5 text-[8px] text-gray-500">{new Date(statusObj.updatedAt).toLocaleString()} ({timeAgo(statusObj.updatedAt)})</span>
                             )}
                           </div>
                         );

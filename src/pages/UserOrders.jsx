@@ -1,10 +1,15 @@
-// client/src/pages/UserOrders.jsx
 import React, { useEffect, useState } from "react";
 import Axios from "../utils/Axios";
+import { Helmet } from "react-helmet-async"; // ✅ SEO
 
 const UserOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // ✅ Page top se open hone ke liye
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, []);
 
   useEffect(() => {
     const fetchUserOrders = async () => {
@@ -24,6 +29,19 @@ const UserOrders = () => {
 
   return (
     <div className="p-6">
+      {/* ✅ SEO Meta Tags */}
+      <Helmet>
+        <title>My Orders | Binkeyit</title>
+        <meta
+          name="description"
+          content="View all your orders, order details, and status in your Nexebay account."
+        />
+        <meta
+          name="keywords"
+          content="user orders, my orders, order status, Nexebay"
+        />
+      </Helmet>
+
       <h1 className="text-2xl font-bold mb-4">My Orders</h1>
       {loading ? (
         <p>Loading your orders...</p>

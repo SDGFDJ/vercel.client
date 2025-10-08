@@ -8,6 +8,7 @@ import AddToCartButton from "../components/AddToCartButton";
 import { DisplayPriceInRupees } from "../utils/DisplayPriceInRupees";
 import { pricewithDiscount } from "../utils/PriceWithDiscount";
 import { valideURLConvert } from "../utils/valideURLConvert";
+import { Helmet } from "react-helmet-async"; // ✅ SEO
 
 const MyWishlist = () => {
   const [wishlist, setWishlist] = useState([]);
@@ -15,7 +16,7 @@ const MyWishlist = () => {
 
   // Scroll to top on page load
   useEffect(() => {
-    window.scrollTo(0, 0); // ✅ Always open from top
+    window.scrollTo(0, 0);
   }, []);
 
   // Fetch wishlist from backend
@@ -57,6 +58,19 @@ const MyWishlist = () => {
 
   return (
     <div className="p-4">
+      {/* ✅ SEO Meta Tags */}
+      <Helmet>
+        <title>My Wishlist | Binkeyit</title>
+        <meta
+          name="description"
+          content="Check all your wishlist products on Nexebay. Add your favorite products to wishlist and shop anytime."
+        />
+        <meta
+          name="keywords"
+          content="wishlist, my wishlist, favorite products, Nexebay"
+        />
+      </Helmet>
+
       <h2 className="text-xl font-bold mb-4">My Wishlist</h2>
 
       {wishlist.length === 0 ? (

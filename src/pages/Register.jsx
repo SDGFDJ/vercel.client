@@ -5,10 +5,9 @@ import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import AxiosToastError from '../utils/AxiosToastError';
 import { Link, useNavigate } from 'react-router-dom';
-
-// ✅ Google Login
 import { GoogleLogin } from '@react-oauth/google';
-import * as jwt_decode from "jwt-decode"; // fixed import
+import * as jwt_decode from "jwt-decode";
+import { Helmet } from 'react-helmet-async'; // ✅ SEO import
 
 const Register = () => {
     const [data, setData] = useState({
@@ -70,9 +69,8 @@ const Register = () => {
     // ✅ Google Register/Login Handler
     const handleGoogleAuth = async (credentialResponse) => {
         try {
-            // credential token भेजो backend को
             const response = await Axios({
-                ...SummaryApi.googleLogin,  // backend endpoint: /google-auth
+                ...SummaryApi.googleLogin,
                 data: { credential: credentialResponse.credential }
             });
 
@@ -90,8 +88,15 @@ const Register = () => {
 
     return (
         <section className='w-full container mx-auto px-2'>
+            {/* ✅ SEO Helmet */}
+            <Helmet>
+                <title>Register | Binkeyit</title>
+                <meta name="description" content="Register to Binkeyit to get access to our amazing products. Create account using email or Google login." />
+                <meta name="keywords" content="register, sign up, Binkeyit, create account, Google login" />
+            </Helmet>
+
             <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
-                <p className="text-lg font-semibold">Welcome to Binkeyit</p>
+                <p className="text-lg font-semibold">Welcome to Nexebay.com</p>
 
                 {/* Normal Register Form */}
                 <form className='grid gap-4 mt-6' onSubmit={handleSubmit}>

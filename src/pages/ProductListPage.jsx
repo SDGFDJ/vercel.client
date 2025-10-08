@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { valideURLConvert } from "../utils/valideURLConvert";
 import { IoClose, IoFilter } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
+import { Helmet } from "react-helmet-async"; // ✅ SEO Import
 
 const ProductListPage = () => {
   const [data, setData] = useState([]);
@@ -137,6 +138,20 @@ const ProductListPage = () => {
 
   return (
     <section className="container mx-auto px-4 py-6">
+      {/* ✅ SEO Helmet */}
+      <Helmet>
+        <title>{subCategoryName || "Products"} | My E-Commerce</title>
+        <meta
+          name="description"
+          content={`Explore our collection of ${subCategoryName || "products"}. Find the best deals and quality items in your favorite category.`}
+        />
+        <meta
+          name="keywords"
+          content={`${subCategoryName || "products"}, online shopping, buy ${subCategoryName || "products"}`}
+        />
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
+
       <div className="grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-6">
         {/* Sidebar (Desktop) */}
         <div className="hidden lg:block bg-white shadow-lg rounded-xl p-6 min-h-[calc(100vh-160px)] max-h-[calc(100vh-160px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300">
@@ -381,10 +396,7 @@ const ProductListPage = () => {
                 </button>
               </div>
             </motion.div>
-            <div
-              className="flex-1"
-              onClick={toggleFilterDrawer}
-            ></div>
+            <div className="flex-1" onClick={toggleFilterDrawer}></div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -14,7 +14,7 @@ import Dashboard from "../layouts/Dashboard";
 import Profile from "../pages/Profile";
 import MyOrders from "../pages/MyOrders";
 import Address from "../pages/Address";
-import MyWishlist from "../pages/Wishlist"; // ✅ Import MyWishlist
+import MyWishlist from "../pages/Wishlist";
 
 // Admin Pages
 import AdminAllOrders from "../pages/AdminAllOrders";
@@ -31,6 +31,10 @@ import CheckoutPage from "../pages/CheckoutPage";
 import Success from "../pages/Success";
 import Cancel from "../pages/Cancel";
 
+// New Pages
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import ReturnPolicy from "../pages/ReturnPolicy";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -46,6 +50,10 @@ const router = createBrowserRouter([
       { path: "reset-password", element: <ResetPassword /> },
       { path: "user", element: <UserMenuMobile /> },
 
+      // New Public Pages
+      { path: "privacy-policy", element: <PrivacyPolicy /> },
+      { path: "return-policy", element: <ReturnPolicy /> },
+
       // User Dashboard
       {
         path: "dashboard",
@@ -54,8 +62,6 @@ const router = createBrowserRouter([
           { path: "profile", element: <Profile /> },
           { path: "myorders", element: <MyOrders /> },
           { path: "address", element: <Address /> },
-
-          // ✅ My Wishlist for both user & admin
           { path: "mywishlist", element: <MyWishlist /> },
 
           // Admin-only routes

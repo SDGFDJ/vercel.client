@@ -5,6 +5,7 @@ import Axios from '../utils/Axios';
 import Loading from '../components/Loading';
 import ProductCardAdmin from '../components/ProductCardAdmin';
 import { IoSearchOutline } from "react-icons/io5";
+import { Helmet } from 'react-helmet-async';
 
 const ProductAdmin = () => {
   const [productData, setProductData] = useState([]);
@@ -38,7 +39,6 @@ const ProductAdmin = () => {
     }
   };
 
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchProductData();
@@ -46,14 +46,14 @@ const ProductAdmin = () => {
 
   const handleNext = () => {
     if (page !== totalPageCount) {
-      setPage((prev) => prev + 1);
+      setPage(prev => prev + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const handlePrevious = () => {
     if (page > 1) {
-      setPage((prev) => prev - 1);
+      setPage(prev => prev - 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -76,8 +76,20 @@ const ProductAdmin = () => {
 
   return (
     <section className="min-h-screen bg-gray-50 p-4">
+      {/* SEO Meta Tags */}
+      <Helmet>
+        <title>Admin Products - Nexebay</title>
+        <meta name="description" content="Admin panel to manage products including adding, editing, and viewing products on Nexebay." />
+        <meta name="keywords" content="Nexebay, Admin, Products, Manage Products, Online Store" />
+        <link rel="canonical" href="https://www.nexebay.com/admin/products" />
+        <meta property="og:title" content="Admin Products - Nexebay" />
+        <meta property="og:description" content="Admin panel to manage products including adding, editing, and viewing products on Nexebay." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.nexebay.com/admin/products" />
+      </Helmet>
+
       {/* Header with Search */}
-      <div className="bg-white shadow-md rounded-lg p-4 flex items-center justify-between gap-6">
+      <div className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
         <h2 className="text-xl lg:text-2xl font-bold text-gray-800">Products</h2>
         <div className="w-full max-w-md bg-teal-50 border border-teal-200 rounded-lg flex items-center px-3 py-2 focus-within:ring-2 focus-within:ring-teal-300 transition">
           <IoSearchOutline size={20} className="text-teal-600" />
@@ -96,24 +108,15 @@ const ProductAdmin = () => {
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4 overflow-y-auto">
             {[...Array(12)].map((_, index) => (
-              <div
-                key={index}
-                className="bg-gray-200 animate-pulse h-auto max-h-96 rounded-lg"
-              />
+              <div key={index} className="bg-gray-200 animate-pulse h-auto max-h-96 rounded-lg" />
             ))}
           </div>
         ) : productData.length > 0 ? (
           <div className="min-h-[70vh] overflow-y-auto">
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {productData.map((p, index) => (
-                <div
-                  key={p._id || index}
-                  className="h-auto w-full max-h-96 flex flex-col justify-between"
-                >
-                  <ProductCardAdmin
-                    data={p}
-                    fetchProductData={fetchProductData}
-                  />
+                <div key={p._id || index} className="h-auto w-full max-h-96 flex flex-col justify-between">
+                  <ProductCardAdmin data={p} fetchProductData={fetchProductData} />
                 </div>
               ))}
             </div>
@@ -126,7 +129,7 @@ const ProductAdmin = () => {
 
         {/* Pagination */}
         {totalPageCount > 1 && (
-          <div className="flex justify-center items-center gap-4 mt-6">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-6">
             <button
               onClick={handlePrevious}
               className="px-4 py-2 bg-teal-100 text-teal-700 rounded-md hover:bg-teal-200 transition disabled:opacity-50"
