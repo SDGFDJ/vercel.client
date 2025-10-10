@@ -90,9 +90,9 @@ const Register = () => {
         <section className='w-full container mx-auto px-2'>
             {/* ✅ SEO Helmet */}
             <Helmet>
-                <title>Register | Binkeyit</title>
-                <meta name="description" content="Register to Binkeyit to get access to our amazing products. Create account using email or Google login." />
-                <meta name="keywords" content="register, sign up, Binkeyit, create account, Google login" />
+                <title>Register | Nexebay</title>
+                <meta name="description" content="Register to Nexebay to get access to our amazing products. Create account using email or Google login." />
+                <meta name="keywords" content="register, sign up,Nexebay, create account, Google login" />
             </Helmet>
 
             <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
