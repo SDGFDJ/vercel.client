@@ -17,7 +17,7 @@ const Success = () => {
       
       {/* ✅ SEO */}
       <Helmet>
-        <title>{successText} Success | Binkeyit</title>
+        <title>{successText} Success | Nexebay </title>
         <meta name="description" content={`Your ${successText} was completed successfully. Thank you for choosing Nexebay.`} />
         <meta name="keywords" content="success, payment, Nexebay, order confirmation" />
       </Helmet>
