@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import logo from "../assets/logo3.jpeg";
+import logo from "../assets/logo6.jpg";
 import Search from "./Search";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BsCart4 } from "react-icons/bs";
@@ -71,7 +71,7 @@ const Header = () => {
             />
             <div className="flex flex-col min-w-0">
               <span className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500 truncate">
-                Trendify
+                Nexebay
               </span>
               <span className="text-xs text-gray-500 -mt-0.5 truncate">Fashion & More</span>
             </div>
