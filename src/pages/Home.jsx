@@ -6,7 +6,12 @@ import CategoryWiseProductDisplay from '../components/CategoryWiseProductDisplay
 import { valideURLConvert } from '../utils/valideURLConvert';
 import { Helmet } from 'react-helmet-async';
 
-// Error Boundary
+// 🖼️ Import Local Banner Images
+import banner1 from "../assets/banner2.jpeg";
+import banner2 from "../assets/banner2.jpeg";
+import banner3 from "../assets/banner3.jpeg";
+
+// 🧱 Error Boundary
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
   static getDerivedStateFromError(error) {
@@ -32,7 +37,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-// Hero Section
+// 🌟 Hero Section
 const HeroSection = ({ user, scrollToProducts }) => {
   const messages = [
     `Welcome, ${user?.username || 'Fashion Lover'}!`,
@@ -40,6 +45,7 @@ const HeroSection = ({ user, scrollToProducts }) => {
     'Exclusive collections just for you!',
     'Unbeatable fashion deals await!',
   ];
+
   const [currentMessage, setCurrentMessage] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [typingIndex, setTypingIndex] = useState(0);
@@ -93,6 +99,7 @@ const HeroSection = ({ user, scrollToProducts }) => {
   );
 };
 
+// 🏠 Home Page
 const Home = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
@@ -104,10 +111,11 @@ const Home = () => {
   const [email, setEmail] = useState('');
   const [showTopBtn, setShowTopBtn] = useState(false);
 
+  // 🖼️ Local Banners
   const banners = [
-    { text: 'Nexebay Exclusive Fashion Sale!', image: 'https://via.placeholder.com/1200x500?text=Fashion+Sale' },
-    { text: 'New Arrivals in Trendy Styles', image: 'https://via.placeholder.com/1200x500?text=New+Arrivals' },
-    { text: 'Limited Time Fashion Deals', image: 'https://via.placeholder.com/1200x500?text=Limited+Deals' },
+    { image: banner1 },
+    {  image: banner2 },
+    {  image: banner3 },
   ];
 
   useEffect(() => {
@@ -149,25 +157,12 @@ const Home = () => {
         <meta name="description" content="Shop latest fashion, accessories, and trendy collections at Nexebay. Discover exclusive deals, new arrivals, and your favorite brands online." />
         <meta name="keywords" content="Nexebay, fashion online, trendy clothes, accessories, online shopping, latest fashion, new arrivals" />
         <link rel="canonical" href="https://www.nexebay.com/" />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "Nexebay",
-            "url": "https://www.nexebay.com",
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://www.nexebay.com/search?q={search_term_string}",
-              "query-input": "required name=search_term_string"
-            }
-          })}
-        </script>
       </Helmet>
 
       <section className="bg-gray-50 min-h-screen">
         <HeroSection user={user} scrollToProducts={scrollToProducts} />
 
-        {/* Banner Carousel */}
+        {/* 🖼️ Banner Carousel */}
         <div className="container mx-auto px-4 py-6">
           <AnimatePresence mode="wait">
             <motion.div key={currentBanner} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.5 }} className="relative rounded-xl overflow-hidden shadow-md cursor-default">
@@ -186,7 +181,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Shop by Category */}
+        {/* 🛍️ Shop by Category */}
         <div className="container mx-auto px-4 py-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Shop by Category</h2>
           <div className="flex overflow-x-auto gap-4 pb-2">
@@ -199,7 +194,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Category-wise Products */}
+        {/* 🛒 Category-wise Products */}
         <div id="products-section">
           {categoryData.map((c) => (
             <motion.div key={c?._id + 'CategorywiseProduct'} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.8 }}>
@@ -208,7 +203,7 @@ const Home = () => {
           ))}
         </div>
 
-        {/* Newsletter */}
+        {/* 📰 Newsletter */}
         <div className="container mx-auto px-4 py-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-white mt-16 relative overflow-hidden">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center">
             <h2 className="text-3xl font-bold mb-4">Stay Trendy with Nexebay!</h2>
@@ -222,7 +217,7 @@ const Home = () => {
           </motion.div>
         </div>
 
-        {/* Back to Top */}
+        {/* ⬆️ Back to Top */}
         {showTopBtn && (
           <motion.button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="fixed bottom-6 right-6 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition" whileHover={{ scale: 1.1 }}>
             ↑
