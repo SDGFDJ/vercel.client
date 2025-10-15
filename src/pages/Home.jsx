@@ -41,7 +41,7 @@ class ErrorBoundary extends React.Component {
 const HeroSection = ({ user, scrollToProducts }) => {
   const messages = [
     `Welcome, ${user?.username || 'Fashion Lover'}!`,
-    'Happy Diwali and Chhat Puja  all of you !!',
+    'Happy Diwali and Chhath Puja  all of you !!',
     "Let's Celebrate Diwali With us",
     'In this Diwali Exclusive collections just for you !',
     'Unbeatable fashion deals await!',
